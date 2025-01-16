@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Chessbot", "Chessbot\Chessbot.vcxproj", "{F1978A9C-12E0-463F-B6E1-9A6D2D2266AC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F1978A9C-12E0-463F-B6E1-9A6D2D2266AC}.Debug|x64.ActiveCfg = Debug|x64
+		{F1978A9C-12E0-463F-B6E1-9A6D2D2266AC}.Debug|x64.Build.0 = Debug|x64
+		{F1978A9C-12E0-463F-B6E1-9A6D2D2266AC}.Debug|x86.ActiveCfg = Debug|Win32
+		{F1978A9C-12E0-463F-B6E1-9A6D2D2266AC}.Debug|x86.Build.0 = Debug|Win32
+		{F1978A9C-12E0-463F-B6E1-9A6D2D2266AC}.Release|x64.ActiveCfg = Release|x64
+		{F1978A9C-12E0-463F-B6E1-9A6D2D2266AC}.Release|x64.Build.0 = Release|x64
+		{F1978A9C-12E0-463F-B6E1-9A6D2D2266AC}.Release|x86.ActiveCfg = Release|Win32
+		{F1978A9C-12E0-463F-B6E1-9A6D2D2266AC}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EC30DEE5-E847-4B6D-8903-C1EA0C4E82E2}
+	EndGlobalSection
+EndGlobal
