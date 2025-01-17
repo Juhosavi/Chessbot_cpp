@@ -41,11 +41,12 @@ public:
 	// LÄKSY
 	// Tyhjentää laudan.
 	void tyhjenna();
-
+		
 	// LÄKSY
-	// Tulosta lauta ascii-grafiikkana (mahdollisesti flagit
+	// Tulosta lauta ascii-grafiikkana (mahdollisesti flagit ee
 	// voisi myös tulostaa jotenkin siististi).
 	void tulosta() const;
+
 
 	// LÄKSY
 	// etsii annetun kuninkaan (wK tai mK) rivin ja linjan
