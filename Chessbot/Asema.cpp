@@ -30,13 +30,9 @@ void Asema::tulosta() const
             case bK: std::cout << " k "; break;
             case bP: std::cout << " p "; break;
             default: std::cout << "   "; break;
-
-
-
             }
         }
  
-
         std::cout << "|" << std::endl;
     }
     
@@ -49,40 +45,28 @@ void Asema::tulosta() const
 
 void Asema::tyhjenna()
 {
-    //Tyhjentää ruudun   
     std::cout << "\033[2J\033[H";
 
-    for (int rivi = 0; rivi < 8; rivi++) 
+    for (int rivi = 0; rivi < 8;rivi++)
     {
-        for (int linja = 0; linja < 8; linja++) 
+        for (int linja = 0; linja < 8;linja++)
         {
-            // NA = 12 = Tyhjä
             _lauta[rivi][linja] = NA;
-  
         }
-  
     }
-
 }
 void Asema::etsi_kuningas(int nappula, int& rivi, int& linja) const
 {
-
-    //rivi i
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 8;i++)
     {
-        //linja j 
-        for (int j = 0; j < 8; j++)
+        for (int j = 0; j < 8;j++)
         {
             if (_lauta[i][j] == nappula)
             {
                 rivi = i;
                 linja = j;
-                std::cout << "runkku löyty";
+                std::cout << "Loyty: ";
             }
-            
-
         }
-
     }
-
 }
