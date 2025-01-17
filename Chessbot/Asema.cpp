@@ -49,5 +49,40 @@ void Asema::tulosta() const
 
 void Asema::tyhjenna()
 {
-    
+    //Tyhjent‰‰ ruudun   
+    std::cout << "\033[2J\033[H";
+
+    for (int rivi = 0; rivi < 8; rivi++) 
+    {
+        for (int linja = 0; linja < 8; linja++) 
+        {
+            // NA = 12 = Tyhj‰
+            _lauta[rivi][linja] = NA;
+  
+        }
+  
+    }
+
+}
+void Asema::etsi_kuningas(int nappula, int& rivi, int& linja) const
+{
+
+    //rivi i
+    for (int i = 0; i < 8; i++)
+    {
+        //linja j 
+        for (int j = 0; j < 8; j++)
+        {
+            if (_lauta[i][j] == nappula)
+            {
+                rivi = i;
+                linja = j;
+                std::cout << "runkku lˆyty";
+            }
+            
+
+        }
+
+    }
+
 }
