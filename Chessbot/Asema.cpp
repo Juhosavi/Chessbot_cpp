@@ -27,3 +27,8 @@ void Asema::tulosta() const
     }
     std::cout << "+";
 }
+
+void Asema::tyhjenna()
+{
+
+}
