@@ -1,16 +1,26 @@
 #include "asema.h"
 #include <iostream>
+#include "siirto.h"
+#include "vector";
 
 void Asema::tulosta() const
 {
+
+
     for (int rivi = 0; rivi < 8; rivi++)
     {
+        // Tulostetaan vaakaviivat
+        std::cout << "  ";
         for (int linja = 0; linja < 8; linja++)
         {
             std::cout << "+---";
         }
-
         std::cout << "+" << std::endl;
+
+        // Tulostetaan rivin numero laudan vasemmalle puolelle
+        std::cout << 8 - rivi << " ";
+
+        // Tulostetaan ruudut ja nappulat
         for (int linja = 0; linja < 8; linja++)
         {
             std::cout << "|";
@@ -32,15 +42,21 @@ void Asema::tulosta() const
             default: std::cout << "   "; break;
             }
         }
- 
+
+        // Tulostetaan rivin numero laudan oikealle puolelle
         std::cout << "|" << std::endl;
     }
-    
+
+    // Tulostetaan viimeinen vaakaviiva
+    std::cout << "  ";
     for (int h = 0; h < 8; h++)
     {
         std::cout << "+---";
     }
-    std::cout << "+";
+    std::cout << "+" << std::endl;
+
+    // Tulostetaan linjat (sarakekirjaimet)
+    std::cout << "    a   b   c   d   e   f   g   h" << std::endl;
 }
 
 void Asema::tyhjenna()
@@ -73,6 +89,7 @@ void Asema::etsi_kuningas(int nappula, int& rivi, int& linja) const
 
 void Asema::tee_siirto(const Siirto& siirto)
 {
+  
     int lahto_rivi = siirto._a_r;
     int lahto_linja = siirto._a_l;
     int kohde_rivi = siirto._l_r;
@@ -80,4 +97,8 @@ void Asema::tee_siirto(const Siirto& siirto)
 
     _lauta[kohde_rivi][kohde_linja] = _lauta[lahto_rivi][lahto_linja];
     _lauta[lahto_rivi][lahto_linja] = NA;
+}
+void anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
+{
+
 }

@@ -18,10 +18,10 @@ public:
     // annetusta merkkijonosta, esim. "e2e4" tai "g8f6".
     Siirto(const std::string& s)
     {
-        _a_r = s[0] - 'a';
-        _a_l = s[1] - '1';
-        _l_r = s[2] - 'a';
-        _l_l = s[3] - '1';
+        _a_l = s[0] - 'a';
+        _a_r = 7 - (s[1] - '1');
+        _l_l = s[2] - 'a';
+        _l_r = 7 - (s[3] - '1');
     }
 
 private:
