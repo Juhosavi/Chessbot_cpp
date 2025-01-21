@@ -106,38 +106,85 @@ bool Asema::on_vastustajan_nappula(int ruutu, int pelaaja) const
 
 void Asema::anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
-
-    //Ylöspäin: Rivinumero pienenee, eli siirrytään riviltä rivi-1 kohti nollaa, kunnes törmätään esteeseen.
-    //Alaspäin: Rivinumero kasvaa, eli siirrytään riviltä rivi + 1 kohti 7 : ää, kunnes törmätään esteeseen.
-    //Vasemmalle : Sarake(linja) pienenee, eli siirrytään sarakkeelta linja - 1 kohti nollaa, kunnes törmätään esteeseen.
-    //Oikealle : Sarake(linja) kasvaa, eli siirrytään sarakkeelta linja + 1 kohti 7 : ää, kunnes törmätään esteeseen.
-
-
+    int nykyinen_rivi, nykyinen_linja;
 
     // YLÖS RIVI PIENENEE
-    int nykyinen_rivi = rivi - 1; // Aloitetaan tornin yläpuolelta
+    nykyinen_rivi = rivi - 1; // Aloitetaan tornin yläpuolelta
     while (nykyinen_rivi >= 0) // Niin kauan kuin pysytään laudan sisällä
     {
         if (_lauta[nykyinen_rivi][linja] == NA)
         {
-            // Ruutu on tyhjä, lisätään siirto
             siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, linja));
         }
         else if (on_vastustajan_nappula(_lauta[nykyinen_rivi][linja], pelaaja))
         {
-            // Vastustajan nappula, lisätään siirto ja pysäytetään suunta
             siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, linja));
             break;
         }
         else
         {
-            // Oma nappula, pysäytetään suunta
             break;
         }
         nykyinen_rivi--; // Siirry seuraavalle riville ylöspäin
     }
 
-    //ALASPÄIN RIVI KASVAA
+    // ALASPÄIN RIVI KASVAA
+    nykyinen_rivi = rivi + 1; // Aloitetaan tornin alapuolelta
+    while (nykyinen_rivi <= 7) // Niin kauan kuin pysytään laudan sisällä
+    {
+        if (_lauta[nykyinen_rivi][linja] == NA)
+        {
+            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, linja));
+        }
+        else if (on_vastustajan_nappula(_lauta[nykyinen_rivi][linja], pelaaja))
+        {
+            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, linja));
+            break;
+        }
+        else
+        {
+            break;
+        }
+        nykyinen_rivi++; // Siirry seuraavalle riville alaspäin
+    }
 
+    // VASEMALLE SARAKE LINJA PIENENEE
+    nykyinen_linja = linja - 1; // Aloitetaan yhdestä vasemmalle
+    while (nykyinen_linja >= 0) // Niin kauan kuin pysytään laudan sisällä
+    {
+        if (_lauta[rivi][nykyinen_linja] == NA)
+        {
+            siirrot.push_back(Siirto(rivi, linja, rivi, nykyinen_linja));
+        }
+        else if (on_vastustajan_nappula(_lauta[rivi][nykyinen_linja], pelaaja))
+        {
+            siirrot.push_back(Siirto(rivi, linja, rivi, nykyinen_linja));
+            break; // Lopetetaan, koska törmättiin vastustajan nappulaan
+        }
+        else
+        {
+            break; // Oma nappula, pysäytetään suunta
+        }
+        nykyinen_linja--; // Siirry seuraavaan sarakkeeseen vasemmalle
+    }
 
+    // OIKEALLE SARAKE LINJA KASVAA
+    nykyinen_linja = linja + 1; // Aloitetaan yhdestä oikealle
+    while (nykyinen_linja <= 7) // Niin kauan kuin pysytään laudan sisällä
+    {
+        if (_lauta[rivi][nykyinen_linja] == NA)
+        {
+            siirrot.push_back(Siirto(rivi, linja, rivi, nykyinen_linja));
+        }
+        else if (on_vastustajan_nappula(_lauta[rivi][nykyinen_linja], pelaaja))
+        {
+            siirrot.push_back(Siirto(rivi, linja, rivi, nykyinen_linja));
+            break; // Lopetetaan, koska törmättiin vastustajan nappulaan
+        }
+        else
+        {
+            break; // Oma nappula, pysäytetään suunta
+        }
+        nykyinen_linja++; // Siirry seuraavaan sarakkeeseen oikealle
+    }
 }
