@@ -70,3 +70,14 @@ void Asema::etsi_kuningas(int nappula, int& rivi, int& linja) const
         }
     }
 }
+
+void Asema::tee_siirto(const Siirto& siirto)
+{
+    int lahto_rivi = siirto._a_r;
+    int lahto_linja = siirto._a_l;
+    int kohde_rivi = siirto._l_r;
+    int kohde_linja = siirto._l_l;
+
+    _lauta[kohde_rivi][kohde_linja] = _lauta[lahto_rivi][lahto_linja];
+    _lauta[lahto_rivi][lahto_linja] = NA;
+}

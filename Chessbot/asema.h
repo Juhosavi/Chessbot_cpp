@@ -1,5 +1,6 @@
 #pragma once
 #include "shakki.h"
+#include "siirto.h"
 
 
 // Pelin tilan kuvaaminen ja siihen liittyvät operaatiot.

@@ -3,13 +3,21 @@
 
 int main()
 {
-	int rivi;
-	int linja;
+    int rivi, linja;
 
-	Asema asema;
-	asema.tulosta();
-	asema.etsi_kuningas(bR, rivi, linja);
-	std::cout << rivi <<linja<< std::endl;
+    Asema asema;
+ 
 
+    // Etsitään mustan tornin sijainti
+    asema.etsi_kuningas(bR, rivi, linja);
+    std::cout << "Tornin sijainti: " << rivi << ", " << linja << std::endl;
+
+    // Tehdään siirto
+    Siirto siirto("a2a6");
+    asema.tee_siirto(siirto);
+
+    // Tulostetaan pelilauta siirron jälkeen
+    asema.tulosta();
+
+    return 0;
 }
-
