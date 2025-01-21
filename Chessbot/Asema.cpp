@@ -1,7 +1,7 @@
 #include "asema.h"
 #include <iostream>
 #include "siirto.h"
-#include "vector";
+#include <vector>
 
 void Asema::tulosta() const
 {
@@ -98,7 +98,37 @@ void Asema::tee_siirto(const Siirto& siirto)
     _lauta[kohde_rivi][kohde_linja] = _lauta[lahto_rivi][lahto_linja];
     _lauta[lahto_rivi][lahto_linja] = NA;
 }
-void anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
+bool Asema::on_vastustajan_nappula(int ruutu, int pelaaja) const
 {
+    return (pelaaja == VALKEA && ruutu >= bR && ruutu <= bP) ||
+        (pelaaja == MUSTA && ruutu >= wR && ruutu <= wP);
+}
+
+void Asema::anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
+{
+
+    // Ylˆs (rivi pienenee)
+    int nykyinen_rivi = rivi - 1; // Aloitetaan tornin yl‰puolelta
+    while (nykyinen_rivi >= 0) // Niin kauan kuin pysyt‰‰n laudan sis‰ll‰
+    {
+        if (_lauta[nykyinen_rivi][linja] == NA)
+        {
+            // Ruutu on tyhj‰, lis‰t‰‰n siirto
+            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, linja));
+        }
+        else if (on_vastustajan_nappula(_lauta[nykyinen_rivi][linja], pelaaja))
+        {
+            // Vastustajan nappula, lis‰t‰‰n siirto ja pys‰ytet‰‰n suunta
+            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, linja));
+            break;
+        }
+        else
+        {
+            // Oma nappula, pys‰ytet‰‰n suunta
+            break;
+        }
+
+        nykyinen_rivi--; // Siirry seuraavalle riville ylˆsp‰in
+    }
 
 }

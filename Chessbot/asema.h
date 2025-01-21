@@ -1,6 +1,7 @@
 #pragma once
 #include "shakki.h"
 #include "siirto.h"
+#include <vector>
 
 
 // Pelin tilan kuvaaminen ja siihen liittyvät operaatiot.
@@ -42,6 +43,8 @@ public:
 	// siirto on laillinen.
 	void tee_siirto(const Siirto& s);
 
+	void anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
+
 	// LÄKSY
 	// Tyhjentää laudan.
 	void tyhjenna();
@@ -55,5 +58,5 @@ public:
 	// etsii annetun kuninkaan (wK tai mK) rivin ja linjan
 	void etsi_kuningas(int nappula, int& rivi, int& linja) const;
 
-	void anna_tornin_raakasiirrot();
+	bool on_vastustajan_nappula(int ruutu, int pelaaja) const;
 };

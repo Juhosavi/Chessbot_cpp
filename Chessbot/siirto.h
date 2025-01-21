@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "shakki.h"
+#include <vector>
 
 // Kuvaa aseman muutosta.
 class Siirto

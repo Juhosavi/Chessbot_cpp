@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Asema.h"
+#include <vector>
 
 int main()
 {
