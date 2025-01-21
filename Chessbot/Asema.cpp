@@ -107,7 +107,14 @@ bool Asema::on_vastustajan_nappula(int ruutu, int pelaaja) const
 void Asema::anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
 
-    // Ylös (rivi pienenee)
+    //Ylöspäin: Rivinumero pienenee, eli siirrytään riviltä rivi-1 kohti nollaa, kunnes törmätään esteeseen.
+    //Alaspäin: Rivinumero kasvaa, eli siirrytään riviltä rivi + 1 kohti 7 : ää, kunnes törmätään esteeseen.
+    //Vasemmalle : Sarake(linja) pienenee, eli siirrytään sarakkeelta linja - 1 kohti nollaa, kunnes törmätään esteeseen.
+    //Oikealle : Sarake(linja) kasvaa, eli siirrytään sarakkeelta linja + 1 kohti 7 : ää, kunnes törmätään esteeseen.
+
+
+
+    // YLÖS RIVI PIENENEE
     int nykyinen_rivi = rivi - 1; // Aloitetaan tornin yläpuolelta
     while (nykyinen_rivi >= 0) // Niin kauan kuin pysytään laudan sisällä
     {
@@ -127,8 +134,10 @@ void Asema::anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vect
             // Oma nappula, pysäytetään suunta
             break;
         }
-
         nykyinen_rivi--; // Siirry seuraavalle riville ylöspäin
     }
+
+    //ALASPÄIN RIVI KASVAA
+
 
 }
