@@ -37,16 +37,18 @@ public:
 	// Ohestalyöntiin tarvittava info.
 	int _kaksoisaskel_linjalla = -1;
 
+	// Tekee annetun siirron laudalla. Voidaan olettaa, että
+	// siirto on laillinen.
+	void tee_siirto(const Siirto& s);
 
 	// LÄKSY
 	// Tyhjentää laudan.
 	void tyhjenna();
-		
+
 	// LÄKSY
-	// Tulosta lauta ascii-grafiikkana (mahdollisesti flagit ee
+	// Tulosta lauta ascii-grafiikkana (mahdollisesti flagit
 	// voisi myös tulostaa jotenkin siististi).
 	void tulosta() const;
-
 
 	// LÄKSY
 	// etsii annetun kuninkaan (wK tai mK) rivin ja linjan
