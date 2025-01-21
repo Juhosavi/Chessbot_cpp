@@ -6,18 +6,21 @@ int main()
     int rivi, linja;
 
     Asema asema;
- 
-
-    // Etsit‰‰n mustan tornin sijainti
-    asema.etsi_kuningas(bR, rivi, linja);
-    std::cout << "Tornin sijainti: " << rivi << ", " << linja << std::endl;
-
-    // Tehd‰‰n siirto
-    Siirto siirto("a2a6");
-    asema.tee_siirto(siirto);
-
-    // Tulostetaan pelilauta siirron j‰lkeen
     asema.tulosta();
+    // Tehd‰‰n siirto
+
+    std::string liikkuminen;
+    while (liikkuminen != "0")
+    {
+        std::cout << "mihin liikut: ";
+        std::cin >> liikkuminen;
+        Siirto siirto(liikkuminen);
+        asema.tee_siirto(siirto);
+
+        // Tulostetaan pelilauta siirron j‰lkeen
+        asema.tulosta();
+
+    }
 
     return 0;
 }

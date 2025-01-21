@@ -1,6 +1,7 @@
 #pragma once
 #include "shakki.h"
 #include "siirto.h"
+#include <vector>
 
 
 // Pelin tilan kuvaaminen ja siihen liittyvät operaatiot.
@@ -54,4 +55,7 @@ public:
 	// LÄKSY
 	// etsii annetun kuninkaan (wK tai mK) rivin ja linjan
 	void etsi_kuningas(int nappula, int& rivi, int& linja) const;
+
+	void anna_tornin_raakasiirrot();
+
 };

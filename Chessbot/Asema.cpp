@@ -3,14 +3,21 @@
 
 void Asema::tulosta() const
 {
+
     for (int rivi = 0; rivi < 8; rivi++)
     {
+        // Tulostetaan vaakaviivat
+        std::cout << "  ";
         for (int linja = 0; linja < 8; linja++)
         {
             std::cout << "+---";
         }
-
         std::cout << "+" << std::endl;
+
+        // Tulostetaan rivin numero laudan vasemmalle puolelle
+        std::cout << 8 - rivi << " ";
+
+        // Tulostetaan ruudut ja nappulat
         for (int linja = 0; linja < 8; linja++)
         {
             std::cout << "|";
@@ -32,16 +39,24 @@ void Asema::tulosta() const
             default: std::cout << "   "; break;
             }
         }
- 
+
+        // Tulostetaan rivin numero laudan oikealle puolelle
         std::cout << "|" << std::endl;
     }
-    
+
+    // Tulostetaan viimeinen vaakaviiva
+    std::cout << "  ";
     for (int h = 0; h < 8; h++)
     {
         std::cout << "+---";
     }
-    std::cout << "+";
+    std::cout << "+" << std::endl;
+
+    // Tulostetaan linjat (sarakekirjaimet)
+    std::cout << "    a   b   c   d   e   f   g   h" << std::endl;
 }
+
+
 
 void Asema::tyhjenna()
 {
