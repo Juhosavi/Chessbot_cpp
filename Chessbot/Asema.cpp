@@ -272,7 +272,7 @@ void Asema::anna_lahetti_raakasiirrot(int rivi, int linja, int pelaaja, std::vec
     {
         if (_lauta[nykyinen_rivi][nykyinen_linja] == NA)
         {
-            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, nykyinen_linja);
+            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, nykyinen_linja));
         }
         else if (on_vastustajan_nappula(_lauta[nykyinen_rivi][nykyinen_linja], pelaaja))
         {
