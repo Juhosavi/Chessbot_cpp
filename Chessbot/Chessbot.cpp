@@ -6,8 +6,9 @@ int main() {
     Asema asema;
     asema.tyhjenna();
 
-    asema._lauta[5][5] = wR;
-    asema._lauta[3][3] = bR;
+    //TESTI NAPPULAT TÄHÄN
+    asema._lauta[5][5] = wR; //valkoinen Rook
+    asema._lauta[3][3] = bR; //musta Rook
 
     asema.tulosta();
     int nykyinen_pelaaja = VALKEA;
@@ -26,7 +27,7 @@ int main() {
 
         // Vaihdetaan vuoroa
         nykyinen_pelaaja = (nykyinen_pelaaja == VALKEA) ? MUSTA : VALKEA;
-        std::cout << (nykyinen_pelaaja == VALKEA ? "VALKOISEN" : "MUSTAN") << " VUORO, ANNA SIIRTO: " << std::endl;
+        std::cout << (nykyinen_pelaaja == VALKEA ? "VALKOISEN" : "MUSTAN") << " VUORO,  " << std::endl;
     }
 
     return 0;

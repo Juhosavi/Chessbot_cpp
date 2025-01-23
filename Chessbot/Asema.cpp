@@ -111,7 +111,7 @@ void Asema::kysy_siirto(int pelaaja, int& lahto_rivi, int& lahto_linja, int& koh
 
     while (true)
     {
-        std::cout << "Siirto ? ";
+        std::cout << "ANNA SIIRTO:  ";
         std::cin >> syote;
 
         // Muodostetaan Siirto-olio syötteestä
@@ -259,4 +259,25 @@ void Asema::anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vect
         }
         nykyinen_linja++; // Siirry seuraavaan sarakkeeseen oikealle
     }
+}
+
+void Asema::anna_lahetti_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
+{
+
+}
+void Asema::anna_ratsu_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const 
+{
+
+}
+void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
+{
+
+}
+void Asema::anna_daami_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
+{
+
+}
+void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
+{
+
 }
