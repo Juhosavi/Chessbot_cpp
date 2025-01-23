@@ -263,7 +263,29 @@ void Asema::anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vect
 
 void Asema::anna_lahetti_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
+    int nykyinen_rivi, nykyinen_linja;
 
+    nykyinen_rivi = rivi - 1;
+    nykyinen_linja = linja - 1;
+
+    while (nykyinen_rivi >= 0 && nykyinen_linja >= 0)
+    {
+        if (_lauta[nykyinen_rivi][nykyinen_linja] == NA)
+        {
+            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, nykyinen_linja);
+        }
+        else if (on_vastustajan_nappula(_lauta[nykyinen_rivi][nykyinen_linja], pelaaja))
+        {
+            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, nykyinen_linja));
+            break;
+        }
+        else
+        {
+            break;
+        }
+        nykyinen_rivi--;
+        nykyinen_linja--;
+    }
 }
 void Asema::anna_ratsu_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const 
 {
