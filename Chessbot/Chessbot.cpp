@@ -4,40 +4,29 @@
 
 int main() {
     Asema asema;
+    asema.tyhjenna();
 
-    // Alustetaan pelilauta (voisit lis‰t‰ t‰h‰n oman tornin testitilanteen)
-    asema.tyhjenna(); // Tyhjenn‰ pelilauta
-    asema._lauta[0][0] = wR; // Asetetaan valkoinen torni kohtaan a1
+    asema._lauta[5][5] = wR;
+    asema._lauta[3][3] = bR;
 
-    std::cout << "Alkutilanne:" << std::endl;
     asema.tulosta();
+    int nykyinen_pelaaja = VALKEA;
 
     while (true) {
         int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
 
-        // Pyydet‰‰n k‰ytt‰j‰lt‰ siirto
-        std::cout << "Anna tornin siirto (esim. a1a3): ";
-        std::string syote;
-        std::cin >> syote;
+        // Kutsutaan funktiota kysym‰‰n siirtoa
+        asema.kysy_siirto(nykyinen_pelaaja, lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
 
-        // Muodostetaan Siirto-olio k‰ytt‰j‰n syˆtteest‰
-        Siirto siirto(syote);
+        // Tehd‰‰n siirto
+        Siirto siirto(lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
+        asema.tee_siirto(siirto, nykyinen_pelaaja);
 
-        // Puretaan siirron tiedot
-        lahto_rivi = siirto._a_r;
-        lahto_linja = siirto._a_l;
-        kohde_rivi = siirto._l_r;
-        kohde_linja = siirto._l_l;
+        asema.tulosta();
 
-        // Tarkistetaan onko siirto laillinen
-        if (asema.onko_laillinen_siirto(siirto, VALKEA)) {
-            asema.tee_siirto(siirto, VALKEA); // Tehd‰‰n siirto
-            std::cout << "Siirto suoritettu:" << std::endl;
-            asema.tulosta();
-        }
-        else {
-            std::cout << "Ei laillinen siirto! Yrit‰ uudelleen." << std::endl;
-        }
+        // Vaihdetaan vuoroa
+        nykyinen_pelaaja = (nykyinen_pelaaja == VALKEA) ? MUSTA : VALKEA;
+        std::cout << (nykyinen_pelaaja == VALKEA ? "VALKOISEN" : "MUSTAN") << " VUORO, ANNA SIIRTO: " << std::endl;
     }
 
     return 0;
