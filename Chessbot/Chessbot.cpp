@@ -1,25 +1,43 @@
 #include <iostream>
-#include "Asema.h"
-#include <vector>
+#include "asema.h"
+#include "siirto.h"
 
-int main()
-{
+int main() {
     Asema asema;
-    
 
-    std::vector<Siirto> siirrot;
+    // Alustetaan pelilauta (voisit lisätä tähän oman tornin testitilanteen)
+    asema.tyhjenna(); // Tyhjennä pelilauta
+    asema._lauta[0][0] = wR; // Asetetaan valkoinen torni kohtaan a1
 
-    // Testaa tornin siirrot tietystä sijainnista
-    int rivi = 5, linja = 5; // Voit asettaa tornin lähtösijainnin testiin
-    asema.anna_tornin_raakasiirrot(rivi, linja, VALKEA, siirrot);
+    std::cout << "Alkutilanne:" << std::endl;
     asema.tulosta();
 
-    // Tulosta lasketut tornin siirrot
-    std::cout << "Tornin mahdolliset siirrot (" << rivi << ", " << linja << "):" << std::endl;
-    for (const auto& siirto : siirrot)
-    {
-        std::cout << "Lähtö: (" << siirto._a_r << ", " << siirto._a_l << ") "
-            << "-> Kohde: (" << siirto._l_r << ", " << siirto._l_l << ")" << std::endl;
+    while (true) {
+        int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
+
+        // Pyydetään käyttäjältä siirto
+        std::cout << "Anna tornin siirto (esim. a1a3): ";
+        std::string syote;
+        std::cin >> syote;
+
+        // Muodostetaan Siirto-olio käyttäjän syötteestä
+        Siirto siirto(syote);
+
+        // Puretaan siirron tiedot
+        lahto_rivi = siirto._a_r;
+        lahto_linja = siirto._a_l;
+        kohde_rivi = siirto._l_r;
+        kohde_linja = siirto._l_l;
+
+        // Tarkistetaan onko siirto laillinen
+        if (asema.onko_laillinen_siirto(siirto, VALKEA)) {
+            asema.tee_siirto(siirto, VALKEA); // Tehdään siirto
+            std::cout << "Siirto suoritettu:" << std::endl;
+            asema.tulosta();
+        }
+        else {
+            std::cout << "Ei laillinen siirto! Yritä uudelleen." << std::endl;
+        }
     }
 
     return 0;

@@ -41,7 +41,11 @@ public:
 
 	// Tekee annetun siirron laudalla. Voidaan olettaa, että
 	// siirto on laillinen.
-	void tee_siirto(const Siirto& s);
+	void tee_siirto(const Siirto& siirto, int pelaaja);
+
+	void kysy_siirto(int pelaaja, int& lahto_rivi, int& lahto_linja, int& kohde_rivi, int& kohde_linja);
+
+	
 
 	void anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
 
@@ -53,6 +57,7 @@ public:
 	// Tulosta lauta ascii-grafiikkana (mahdollisesti flagit
 	// voisi myös tulostaa jotenkin siististi).
 	void tulosta() const;
+	bool onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const;
 
 	// LÄKSY
 	// etsii annetun kuninkaan (wK tai mK) rivin ja linjan

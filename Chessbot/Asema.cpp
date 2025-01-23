@@ -87,9 +87,15 @@ void Asema::etsi_kuningas(int nappula, int& rivi, int& linja) const
     }
 }
 
-void Asema::tee_siirto(const Siirto& siirto)
+void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
 {
-  
+    if (onko_laillinen_siirto(siirto, pelaaja) == false)
+    {
+        std::cout << "Ei laillinen siirto!" << std::endl;
+        return; // Palataan eikä tehdä siirtoa
+    }
+
+    // Siirto on laillinen, suoritetaan siirto
     int lahto_rivi = siirto._a_r;
     int lahto_linja = siirto._a_l;
     int kohde_rivi = siirto._l_r;
@@ -98,11 +104,77 @@ void Asema::tee_siirto(const Siirto& siirto)
     _lauta[kohde_rivi][kohde_linja] = _lauta[lahto_rivi][lahto_linja];
     _lauta[lahto_rivi][lahto_linja] = NA;
 }
+
+void Asema::kysy_siirto(int pelaaja, int& lahto_rivi, int& lahto_linja, int& kohde_rivi, int& kohde_linja)
+{
+    std::string syote;
+
+    while (true)
+    {
+        std::cout << "Siirto ? ";
+        std::cin >> syote;
+
+        // Muodostetaan Siirto-olio syötteestä
+        Siirto siirto(syote);
+
+        // Tarkistetaan, että siirto on laillinen
+        if (onko_laillinen_siirto(siirto, pelaaja))
+        {
+            // Puretaan siirron tiedot
+            lahto_rivi = siirto._a_r;
+            lahto_linja = siirto._a_l;
+            kohde_rivi = siirto._l_r;
+            kohde_linja = siirto._l_l;
+            break; // Hyväksytään siirto ja poistutaan silmukasta
+        }
+        else
+        {
+            std::cout << "Ei laillinen siirto! Yrita uudelleen." << std::endl;
+        }
+    }
+}
+
+
 bool Asema::on_vastustajan_nappula(int ruutu, int pelaaja) const
 {
     return (pelaaja == VALKEA && ruutu >= bR && ruutu <= bP) ||
         (pelaaja == MUSTA && ruutu >= wR && ruutu <= wP);
 }
+bool Asema::onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const
+{
+    std::vector<Siirto> sallitut_siirrot;
+
+    int rivi = siirto._a_r;
+    int linja = siirto._a_l;
+    int nappula = _lauta[rivi][linja];
+
+    // Varmistetaan, että nappula kuuluu pelaajalle
+    if ((pelaaja == VALKEA && !(nappula >= wR && nappula <= wP)) ||
+        (pelaaja == MUSTA && !(nappula >= bR && nappula <= bP)))
+    {
+        return false; // Lähtöruudussa ei ole pelaajan nappulaa
+    }
+
+    // Lisätään raakasiirrot siirtojen joukkoon nappulan mukaan
+    if (nappula == wR || nappula == bR) // Torni
+    {
+        anna_tornin_raakasiirrot(rivi, linja, pelaaja, sallitut_siirrot);
+    }
+    // Lisää muita nappulatyyppejä myöhemmin...
+
+    // Tarkistetaan, onko siirto sallittujen siirtojen joukossa
+    for (const auto& s : sallitut_siirrot)
+    {
+        if (s._a_r == siirto._a_r && s._a_l == siirto._a_l &&
+            s._l_r == siirto._l_r && s._l_l == siirto._l_l)
+        {
+            return true; // Siirto löytyi sallitujen siirtojen joukosta
+        }
+    }
+
+    return false; // Siirto ei ole laillinen
+}
+
 
 void Asema::anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
