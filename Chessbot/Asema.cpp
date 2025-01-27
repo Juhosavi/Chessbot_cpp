@@ -164,6 +164,18 @@ bool Asema::onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const
     {
         anna_lahetti_raakasiirrot(rivi, linja, pelaaja, sallitut_siirrot);
     }
+    if (nappula == wN || nappula == bN) //Ratsu
+    {
+        anna_ratsu_raakasiirrot(rivi, linja, pelaaja, sallitut_siirrot);
+    }
+    if (nappula == wQ || nappula == bQ) //Kuningatar
+    {
+        anna_daami_raakasiirrot(rivi, linja, pelaaja, sallitut_siirrot);
+    }
+    if (nappula == wK || nappula == bK) //Kuningatar
+    {
+        anna_kuningas_raakasiirrot(rivi, linja, pelaaja, sallitut_siirrot);
+    }
     // Lisää muita nappulatyyppejä myöhemmin...
 
     // Tarkistetaan, onko siirto sallittujen siirtojen joukossa
@@ -359,19 +371,85 @@ void Asema::anna_lahetti_raakasiirrot(int rivi, int linja, int pelaaja, std::vec
 
     }
 }
-void Asema::anna_ratsu_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const 
+void Asema::anna_ratsu_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
 
-}
-void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
-{
+    // Alustetaan ratsun siirrot shakkilaudalla
+    const int ratsun_siirrot[8][2] =
+    {
+        {-2, -1}, // Ratsun siirto 2 ruutua ylös ja 1 ruutu vasemmalle
+        {-1, -2}, // Ratsun siirto 1 ruutu ylös ja 2 ruutua vasemmalle
+        {1, -2},  // Ratsun siirto 1 ruutu alas ja 2 ruutua vasemmalle
+        {2, -1},  // Ratsun siirto 2 ruutua alas ja 1 ruutu vasemmalle
+        {2, 1},   // Ratsun siirto 2 ruutua alas ja 1 ruutu oikealle
+        {1, 2},   // Ratsun siirto 1 ruutu alas ja 2 ruutua oikealle
+        {-1, 2},  // Ratsun siirto 1 ruutu ylös ja 2 ruutua oikealle
+        {-2, 1}   // Ratsun siirto 2 ruutua ylös ja 1 ruutu oikealle
+    };
 
+    // Käydään läpi kaikki mahdolliset ratsun siirrot
+    for (int i = 0; i < 8; ++i)
+    {
+        // Lasketaan uusi rivi ja linja ratsun siirron perusteella
+        int uusi_rivi = rivi + ratsun_siirrot[i][0];
+        int uusi_linja = linja + ratsun_siirrot[i][1];
+
+        // Tarkistetaan, että uusi rivi ja linja ovat shakkilaudan sisällä
+        if (uusi_rivi >= 0 && uusi_rivi < 8 && uusi_linja >= 0 && uusi_linja < 8)
+        {
+            // Tarkistetaan, että uusi ruutu on tyhjä tai siinä on vastustajan nappula
+            if (_lauta[uusi_rivi][uusi_linja] == NA || on_vastustajan_nappula(_lauta[uusi_rivi][uusi_linja], pelaaja))
+            {
+                // Lisätään siirto mahdollisiin siirtoihin
+                siirrot.push_back(Siirto(rivi, linja, uusi_rivi, uusi_linja));
+            }
+            
+        }
+    }
 }
 void Asema::anna_daami_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
+    // Daami voi liikkua kuin torni
+    anna_tornin_raakasiirrot(rivi, linja, pelaaja, siirrot);
 
+    // Daami voi liikkua kuin lähetti
+    anna_lahetti_raakasiirrot(rivi, linja, pelaaja, siirrot);
 }
+
 void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
+{
+    const int kuningas_siirrot[8][2] =
+    {
+        {-1, -1}, // 1 ruutu ylös ja 1 ruutu vasemmalle
+        {-1,  0}, // 1 ruutu ylös
+        {-1,  1}, // 1 ruutu ylös ja 1 ruutu oikealle
+        { 0, -1}, // 1 ruutu vasemmalle
+        { 0,  1}, // 1 ruutu oikealle
+        { 1, -1}, // 1 ruutu alas ja 1 ruutu vasemmalle
+        { 1,  0}, // 1 ruutu alas
+        { 1,  1}  // 1 ruutu alas ja 1 ruutu oikealle
+    };
+    // Käydään läpi kaikki mahdolliset Kuninkaan siirrot
+    for (int i = 0; i < 8; ++i)
+    {
+        // Lasketaan uusi rivi ja linja ratsun siirron perusteella
+        int uusi_rivi = rivi + kuningas_siirrot[i][0];
+        int uusi_linja = linja + kuningas_siirrot[i][1];
+
+        // Tarkistetaan, että uusi rivi ja linja ovat shakkilaudan sisällä
+        if (uusi_rivi >= 0 && uusi_rivi < 8 && uusi_linja >= 0 && uusi_linja < 8)
+        {
+            // Tarkistetaan, että uusi ruutu on tyhjä tai siinä on vastustajan nappula
+            if (_lauta[uusi_rivi][uusi_linja] == NA || on_vastustajan_nappula(_lauta[uusi_rivi][uusi_linja], pelaaja))
+            {
+                // Lisätään siirto mahdollisiin siirtoihin
+                siirrot.push_back(Siirto(rivi, linja, uusi_rivi, uusi_linja));
+            }
+
+        }
+    }
+}
+void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
 
 }
