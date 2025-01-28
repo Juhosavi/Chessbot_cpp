@@ -71,6 +71,7 @@ void Asema::tyhjenna()
         }
     }
 }
+
 void Asema::etsi_kuningas(int nappula, int& rivi, int& linja) const
 {
     for (int i = 0; i < 8;i++)
@@ -111,7 +112,7 @@ void Asema::kysy_siirto(int pelaaja, int& lahto_rivi, int& lahto_linja, int& koh
 
     while (true)
     {
-        std::cout << "ANNA SIIRTO:  ";
+        std::cout << "Pelaaja " << pelaaja << ", ANNA SIIRTO:  ";
         std::cin >> syote;
 
         // Muodostetaan Siirto-olio syötteestä
@@ -134,12 +135,12 @@ void Asema::kysy_siirto(int pelaaja, int& lahto_rivi, int& lahto_linja, int& koh
     }
 }
 
-
 bool Asema::on_vastustajan_nappula(int ruutu, int pelaaja) const
 {
     return (pelaaja == VALKEA && ruutu >= bR && ruutu <= bP) ||
         (pelaaja == MUSTA && ruutu >= wR && ruutu <= wP);
 }
+
 bool Asema::onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const
 {
     std::vector<Siirto> sallitut_siirrot;
@@ -176,6 +177,10 @@ bool Asema::onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const
     {
         anna_kuningas_raakasiirrot(rivi, linja, pelaaja, sallitut_siirrot);
     }
+    if (nappula == wP || nappula == bP) //Kuningatar
+    {
+        anna_sotilas_raakasiirrot(rivi, linja, pelaaja, sallitut_siirrot);
+    }
     // Lisää muita nappulatyyppejä myöhemmin...
 
     // Tarkistetaan, onko siirto sallittujen siirtojen joukossa
@@ -190,7 +195,6 @@ bool Asema::onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const
 
     return false; // Siirto ei ole laillinen
 }
-
 
 void Asema::anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
@@ -276,7 +280,6 @@ void Asema::anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vect
         nykyinen_linja++; // Siirry seuraavaan sarakkeeseen oikealle
     }
 }
-
 void Asema::anna_lahetti_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
     //VASEMMALLE YLÖS
@@ -415,7 +418,6 @@ void Asema::anna_daami_raakasiirrot(int rivi, int linja, int pelaaja, std::vecto
     // Daami voi liikkua kuin lähetti
     anna_lahetti_raakasiirrot(rivi, linja, pelaaja, siirrot);
 }
-
 void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
     const int kuningas_siirrot[8][2] =
@@ -451,5 +453,30 @@ void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::ve
 }
 void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
+    int suunta = (pelaaja == VALKEA) ? -1 : 1; // Valkoinen liikkuu ylöspäin (-1), musta alaspäin (+1)
+    int aloitusrivi = (pelaaja == VALKEA) ? 6 : 1; // Valkoisen aloitusrivi on 6, mustan 1
 
+    // Yksi askel eteenpäin
+    if (_lauta[rivi + suunta][linja] == NA)
+    {
+        siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja));
+
+        // Kaksi askelta eteenpäin aloitusriviltä
+        if (rivi == aloitusrivi && _lauta[rivi + 2 * suunta][linja] == NA)
+        {
+            siirrot.push_back(Siirto(rivi, linja, rivi + 2 * suunta, linja));
+        }
+    }
+
+    // Lyönti kulmittain vasemmalle
+    if (linja > 0 && on_vastustajan_nappula(_lauta[rivi + suunta][linja - 1], pelaaja))
+    {
+        siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja - 1));
+    }
+
+    // Lyönti kulmittain oikealle
+    if (linja < 8 && on_vastustajan_nappula(_lauta[rivi + suunta][linja + 1], pelaaja))
+    {
+        siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1));
+    }
 }
