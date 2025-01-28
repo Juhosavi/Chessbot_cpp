@@ -453,8 +453,25 @@ void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::ve
 }
 void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
-    int suunta = (pelaaja == VALKEA) ? -1 : 1; // Valkoinen liikkuu ylöspäin (-1), musta alaspäin (+1)
-    int aloitusrivi = (pelaaja == VALKEA) ? 6 : 1; // Valkoisen aloitusrivi on 6, mustan 1
+    int suunta;
+    if (pelaaja == VALKEA) 
+    {
+        suunta = -1; // Valkoinen liikkuu ylöspäin
+    }
+    else 
+    {
+        suunta = 1; // Musta liikkuu alaspäin
+    }
+
+    int aloitusrivi;
+    if (pelaaja == VALKEA) 
+    {
+        aloitusrivi = 6; // Valkoisen aloitusrivi on 6
+    }
+    else 
+    {
+        aloitusrivi = 1; // Mustan aloitusrivi on 1
+    }
 
     // Yksi askel eteenpäin
     if (_lauta[rivi + suunta][linja] == NA)
