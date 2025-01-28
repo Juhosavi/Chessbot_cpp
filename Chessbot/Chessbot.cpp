@@ -4,14 +4,6 @@
 
 int main() {
     Asema asema;
-    asema.tyhjenna();
-
-    //TESTI NAPPULAT TÄHÄN
-    asema._lauta[6][4] = wP;
-    asema._lauta[5][5] = wP; //valkoinen 
-
-    asema._lauta[3][3] = bP; //musta 
-    asema._lauta[1][5] = bP; //musta 
 
     asema.tulosta();
     int nykyinen_pelaaja = VALKEA;
