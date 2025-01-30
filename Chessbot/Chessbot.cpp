@@ -1,29 +1,34 @@
 #include <iostream>
+#include <vector>
 #include "asema.h"
 #include "siirto.h"
+using namespace std;
+
 
 int main() {
-    Asema asema;
 
-    asema.tulosta();
-    int nykyinen_pelaaja = VALKEA;
+
+    Asema asema;
+    vector<Siirto> siirrot;
 
     while (true) 
     {
+        asema.tulosta();
+        siirrot.clear();
+        asema.anna_kaikki_raakasiirrot(asema._siirtovuoro, siirrot);
+
+        std::cout << "Siirtoja: " << siirrot.size() << std::endl;
+
+
         int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
 
         // Kutsutaan funktiota kysymään siirtoa
-        asema.kysy_siirto(nykyinen_pelaaja, lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
+        asema.kysy_siirto(asema._siirtovuoro, lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
 
         // Tehdään siirto
         Siirto siirto(lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
-        asema.tee_siirto(siirto, nykyinen_pelaaja);
+        asema.tee_siirto(siirto, asema._siirtovuoro);
 
-        asema.tulosta();
-
-        // Vaihdetaan vuoroa
-        nykyinen_pelaaja = (nykyinen_pelaaja == VALKEA) ? MUSTA : VALKEA;
-        std::cout << (nykyinen_pelaaja == VALKEA ? "VALKOISEN" : "MUSTAN") << " VUORO,  " << std::endl;
     }
 
     return 0;

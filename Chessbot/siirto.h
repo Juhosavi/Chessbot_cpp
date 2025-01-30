@@ -23,6 +23,7 @@ public:
         _l_l = s[2] - 'a';
         _l_r = 7 - (s[3] - '1');
     }
+  
 
     // Julkiset attribuutit
     int _a_r; // Siirron alkuruudun rivi
