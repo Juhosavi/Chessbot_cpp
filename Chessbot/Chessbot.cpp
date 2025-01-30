@@ -7,8 +7,9 @@ int main() {
     asema.tyhjenna();
 
     //TESTI NAPPULAT TÄHÄN
-    asema._lauta[5][5] = wK; //valkoinen Rook
-    asema._lauta[3][3] = bK; //musta Rook
+    asema._lauta[5][5] = wN; //valkoinen Rook
+    asema._lauta[3][3] = bN; //musta Rook
+    asema._lauta[5][7] = wB;
 
     asema.tulosta();
     int nykyinen_pelaaja = VALKEA;
