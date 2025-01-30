@@ -176,6 +176,10 @@ bool Asema::onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const
     {
         anna_kuningas_raakasiirrot(rivi, linja, pelaaja, sallitut_siirrot);
     }
+    if (nappula == wP || nappula == bP) //Kuningatar
+    {
+        anna_sotilas_raakasiirrot(rivi, linja, pelaaja, sallitut_siirrot);
+    }
     // Lisää muita nappulatyyppejä myöhemmin...
 
     // Tarkistetaan, onko siirto sallittujen siirtojen joukossa
@@ -451,5 +455,39 @@ void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::ve
 }
 void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
+    int nykyinen_linja = linja;
+    if (pelaaja == VALKEA && _lauta[nykyinen_linja][linja] == wP)
+    {
+        int nykyinen_rivi = rivi - 2;
+        siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, linja));
+    }
+    else if (pelaaja == VALKEA)
+    {
+        int nykyinen_rivi = rivi - 1;
+        int nykyinen_linja;
+        if (_lauta[nykyinen_rivi][linja] == NA)
+        {
+            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, linja));
+        }
+        else if (on_vastustajan_nappula(_lauta[nykyinen_rivi][linja], pelaaja))
+        {
+            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, linja));
 
+        }
+
+    }
+    else if (pelaaja == MUSTA) 
+    {
+        int nykyinen_rivi = rivi + 1;
+        int nykyinen_linja;
+        if (_lauta[nykyinen_rivi][linja] == NA) 
+        {
+            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, linja));
+
+        }
+        else if (on_vastustajan_nappula(_lauta[nykyinen_rivi][linja], pelaaja)) 
+        {
+            siirrot.push_back(Siirto(rivi, linja, nykyinen_rivi, linja));
+        }
+    }
 }
