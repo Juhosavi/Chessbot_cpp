@@ -104,6 +104,11 @@ void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
 
     _lauta[kohde_rivi][kohde_linja] = _lauta[lahto_rivi][lahto_linja];
     _lauta[lahto_rivi][lahto_linja] = NA;
+
+    // Vaihdetaan vuoroa
+    _siirtovuoro = (_siirtovuoro == VALKEA) ? MUSTA : VALKEA;
+
+
 }
 
 void Asema::kysy_siirto(int pelaaja, int& lahto_rivi, int& lahto_linja, int& kohde_rivi, int& kohde_linja)
@@ -496,4 +501,66 @@ void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vec
     {
         siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1));
     }
+}
+
+
+void Asema::anna_kaikki_raakasiirrot(int pelaaja, std::vector<Siirto>& siirrot) const 
+{
+    // käy läpi kaikki ruudut
+    for (int rivi = 0; rivi < 8; rivi++)
+        for (int sarake = 0; sarake < 8; sarake++)
+        {
+            int nappula = _lauta[rivi][sarake];
+
+            if (_siirtovuoro == VALKEA && nappula == wR){
+				anna_tornin_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+            else if (_siirtovuoro == VALKEA && nappula == wN) {
+                anna_ratsu_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+            else if (_siirtovuoro == VALKEA && nappula == wB) 
+            {
+                anna_lahetti_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+            else if (_siirtovuoro == VALKEA && nappula == wQ) {
+                anna_daami_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+            else if (_siirtovuoro == VALKEA && nappula == wK) {
+                anna_kuningas_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+            else if (_siirtovuoro == VALKEA && nappula == wP) {
+                anna_sotilas_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+            else if (_siirtovuoro == MUSTA && nappula == bR) {
+                anna_tornin_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+            else if (_siirtovuoro == MUSTA && nappula == bN) {
+                anna_ratsu_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+            else if (_siirtovuoro == MUSTA && nappula == bB) {
+                anna_lahetti_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+            else if (_siirtovuoro == MUSTA && nappula == bQ) {
+                anna_daami_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+            else if (_siirtovuoro == MUSTA && nappula == bK) {
+                anna_kuningas_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+            else if (_siirtovuoro == MUSTA && nappula == bP) {
+                anna_sotilas_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+            }
+        }
+
 }

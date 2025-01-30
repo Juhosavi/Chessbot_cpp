@@ -53,6 +53,7 @@ public:
 	void anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
 	void anna_daami_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
 	void anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
+	void anna_kaikki_raakasiirrot(int pelaaja, std::vector<Siirto>& siirrot)const;
 
 	// LÄKSY
 	// Tyhjentää laudan.
