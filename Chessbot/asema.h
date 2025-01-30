@@ -41,7 +41,18 @@ public:
 
 	// Tekee annetun siirron laudalla. Voidaan olettaa, että
 	// siirto on laillinen.
-	void tee_siirto(const Siirto& s);
+	void tee_siirto(const Siirto& siirto, int pelaaja);
+
+	void kysy_siirto(int pelaaja, int& lahto_rivi, int& lahto_linja, int& kohde_rivi, int& kohde_linja);
+
+	
+
+	void anna_tornin_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
+	void anna_lahetti_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
+	void anna_ratsu_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
+	void anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
+	void anna_daami_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
+	void anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
 
 	// LÄKSY
 	// Tyhjentää laudan.
@@ -51,11 +62,11 @@ public:
 	// Tulosta lauta ascii-grafiikkana (mahdollisesti flagit
 	// voisi myös tulostaa jotenkin siististi).
 	void tulosta() const;
+	bool onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const;
 
 	// LÄKSY
 	// etsii annetun kuninkaan (wK tai mK) rivin ja linjan
 	void etsi_kuningas(int nappula, int& rivi, int& linja) const;
 
-	void anna_tornin_raakasiirrot();
-
+	bool on_vastustajan_nappula(int ruutu, int pelaaja) const;
 };

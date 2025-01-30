@@ -1,25 +1,29 @@
 #include <iostream>
-#include "Asema.h"
+#include "asema.h"
+#include "siirto.h"
 
-int main()
-{
-    int rivi, linja;
-
+int main() {
     Asema asema;
+
     asema.tulosta();
-    // Tehd‰‰n siirto
+    int nykyinen_pelaaja = VALKEA;
 
-    std::string liikkuminen;
-    while (liikkuminen != "0")
+    while (true) 
     {
-        std::cout << "mihin liikut: ";
-        std::cin >> liikkuminen;
-        Siirto siirto(liikkuminen);
-        asema.tee_siirto(siirto);
+        int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
 
-        // Tulostetaan pelilauta siirron j‰lkeen
+        // Kutsutaan funktiota kysym‰‰n siirtoa
+        asema.kysy_siirto(nykyinen_pelaaja, lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
+
+        // Tehd‰‰n siirto
+        Siirto siirto(lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
+        asema.tee_siirto(siirto, nykyinen_pelaaja);
+
         asema.tulosta();
 
+        // Vaihdetaan vuoroa
+        nykyinen_pelaaja = (nykyinen_pelaaja == VALKEA) ? MUSTA : VALKEA;
+        std::cout << (nykyinen_pelaaja == VALKEA ? "VALKOISEN" : "MUSTAN") << " VUORO,  " << std::endl;
     }
 
     return 0;
