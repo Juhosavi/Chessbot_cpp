@@ -514,28 +514,22 @@ void Asema::anna_kaikki_raakasiirrot(int pelaaja, std::vector<Siirto>& siirrot) 
 
             if (_siirtovuoro == VALKEA && nappula == wR){
 				anna_tornin_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
             }
             else if (_siirtovuoro == VALKEA && nappula == wN) {
                 anna_ratsu_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
             }
             else if (_siirtovuoro == VALKEA && nappula == wB) 
             {
                 anna_lahetti_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
             }
             else if (_siirtovuoro == VALKEA && nappula == wQ) {
                 anna_daami_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
             }
             else if (_siirtovuoro == VALKEA && nappula == wK) {
                 anna_kuningas_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
             }
             else if (_siirtovuoro == VALKEA && nappula == wP) {
                 anna_sotilas_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
             }
             else if (_siirtovuoro == MUSTA && nappula == bR) {
                 anna_tornin_raakasiirrot(rivi, sarake, pelaaja, siirrot);
