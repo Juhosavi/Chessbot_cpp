@@ -54,7 +54,8 @@ public:
 	void anna_daami_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
 	void anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const;
 	void anna_kaikki_raakasiirrot(int pelaaja, std::vector<Siirto>& siirrot)const;
-
+	void anna_siirrot(std::vector<Siirto>& siirrot) const;
+	bool onko_ruutu_uhattu(int rivi, int linja, int uhkaava_pelaaja) const;
 	// LÄKSY
 	// Tyhjentää laudan.
 	void tyhjenna();

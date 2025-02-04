@@ -15,7 +15,7 @@ int main() {
     {
         asema.tulosta();
         siirrot.clear();
-        asema.anna_kaikki_raakasiirrot(asema._siirtovuoro, siirrot);
+        asema.anna_siirrot(siirrot);
 
         std::cout << "Siirtoja: " << siirrot.size() << std::endl;
         for (int i = 0; i < siirrot.size(); i++)
@@ -37,6 +37,7 @@ int main() {
         // Tehdään siirto
         Siirto siirto(lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
         asema.tee_siirto(siirto, asema._siirtovuoro);
+        asema.anna_siirrot(siirrot);
 
     }
 
