@@ -38,4 +38,6 @@ public:
         return _a_r == other._a_r && _a_l == other._a_l &&
             _l_r == other._l_r && _l_l == other._l_l;
     }
+
+  friend class Asema;
 };

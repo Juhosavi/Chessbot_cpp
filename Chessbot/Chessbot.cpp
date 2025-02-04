@@ -14,14 +14,6 @@ int main() {
         asema.anna_siirrot(siirrot);
 
         std::cout << "Siirtoja: " << siirrot.size() << std::endl;
-        for (int i = 0; i < siirrot.size(); i++) {
-            char alkuL = 'a' + siirrot[i]._a_l;
-            char alkuR = '1' + (7 - siirrot[i]._a_r);
-            char loppuL = 'a' + siirrot[i]._l_l;
-            char loppuR = '1' + (7 - siirrot[i]._l_r);
-
-            std::cout << i << ": " << alkuL << alkuR << " --- > " << loppuL << loppuR << std::endl;
-        }
 
         int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
         Siirto kayttajan_siirto;
@@ -37,12 +29,6 @@ int main() {
             bool laillinen_siirto = false;
             for (const auto& s : siirrot) {
                 if (s == kayttajan_siirto) {
-                    for (const auto& s : siirrot) {
-                        if (s == kayttajan_siirto) {
-                            laillinen_siirto = true;
-                            break;
-                        }
-                    }
                     laillinen_siirto = true;
                     break;
                 }
