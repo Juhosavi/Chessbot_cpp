@@ -82,7 +82,7 @@ void Asema::etsi_kuningas(int nappula, int& rivi, int& linja) const
             {
                 rivi = i;
                 linja = j;
-                std::cout << "Loyty: ";
+               
             }
         }
     }
