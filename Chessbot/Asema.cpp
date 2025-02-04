@@ -533,28 +533,71 @@ void Asema::anna_kaikki_raakasiirrot(int pelaaja, std::vector<Siirto>& siirrot) 
             }
             else if (_siirtovuoro == MUSTA && nappula == bR) {
                 anna_tornin_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+               
             }
             else if (_siirtovuoro == MUSTA && nappula == bN) {
                 anna_ratsu_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+                
             }
             else if (_siirtovuoro == MUSTA && nappula == bB) {
                 anna_lahetti_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+               
             }
             else if (_siirtovuoro == MUSTA && nappula == bQ) {
                 anna_daami_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+                
             }
             else if (_siirtovuoro == MUSTA && nappula == bK) {
                 anna_kuningas_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+               
             }
             else if (_siirtovuoro == MUSTA && nappula == bP) {
                 anna_sotilas_raakasiirrot(rivi, sarake, pelaaja, siirrot);
-                siirrot.push_back(Siirto(rivi, sarake, rivi, sarake));
+                
             }
         }
 
+}
+
+bool Asema::onko_ruutu_uhattu(int rivi, int linja, int uhkaava_pelaaja) const
+{
+    //tarkistaa onko ruutu uhattu ja osuuko joku t‰h‰n ruutuun
+    std::vector<Siirto> raakasiirrot;
+    anna_kaikki_raakasiirrot(uhkaava_pelaaja, raakasiirrot);
+    for (auto& rs : raakasiirrot)
+	{
+		if (rs._l_r == rivi && rs._l_l == linja)
+		{
+			return true;
+            std::cout << "UHATTU!";
+		}
+	}
+    return false;
+    std::cout << "EI UHATTU";
+}
+
+void Asema::anna_siirrot(std::vector<Siirto>& siirrot) const
+{
+    std::vector<Siirto> raakasiirrot;
+
+
+    // generoidaan raakasiirrot, ja testataan ne yksi kerrallaan. 
+    anna_kaikki_raakasiirrot(_siirtovuoro, raakasiirrot);
+    for (auto& rs : raakasiirrot)
+    {
+        //tehd‰‰n siirto
+        Asema uusi_asema = *this;
+        uusi_asema.tee_siirto(rs, _siirtovuoro);
+
+        // etsit‰‰n kuningas
+        int k_rivi, k_linja;
+        uusi_asema.etsi_kuningas((_siirtovuoro == VALKEA) ? wK : bK, k_rivi, k_linja);
+
+        //tarkistetaan onko kuningas uhattu
+        if (uusi_asema.onko_ruutu_uhattu(k_rivi, k_linja, uusi_asema._siirtovuoro) == false)
+        {
+            // lˆytyi laillinen siirto, lis‰t‰‰n siirto-vektoriin
+            siirrot.push_back(rs);
+        }
+    }
 }
