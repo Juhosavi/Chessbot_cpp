@@ -25,7 +25,7 @@ void lataaTekstuurit() {
 
     for (const string& piece : pieces) {
         sf::Texture texture;
-        if (!texture.loadFromFile("C:/Chessbot_cpp/pieces/" + piece + ".png")) {
+        if (!texture.loadFromFile("C:/Users/savin/source/repos/Chessbot/pieces/" + piece + ".png")) {
             cerr << "Virhe ladattaessa tekstuuria: " << piece << endl;
         }
         textures[piece] = texture;
@@ -35,9 +35,25 @@ void lataaTekstuurit() {
 // SFML-graafinen käyttöliittymä
 void sfml_gui(Asema& asema)
 {
-    sf::RenderWindow window(sf::VideoMode(800, 800), "SFML Chessboard");
-    lataaTekstuurit(); // Ladataan nappuloiden tekstuurit
+    sf::Font font;
+    if (!font.loadFromFile("C:/Users/savin/source/repos/Chessbot/font/AldotheApache.ttf")) {
+		cerr << "Virhe ladattaessa fonttia!" << endl;
+	}
+    sf::Text text;
+    sf::Text text2;
+    text.setFont(font);
+    text2.setFont(font);
+    text.setString("         A        B        C        D        E        F        G        H");
+    text2.setString(" 8\n\n 7\n\n 6\n\n 5\n\n 4\n\n 3\n\n 2\n\n 1");
+    sf::Color darkBrown(139, 69, 19);  // Tummanruskea
+    sf::Color lightBrown(222, 184, 135);  // Vaaleanruskea
 
+
+    text.setCharacterSize(45);
+    text2.setCharacterSize(45);
+    text.setFillColor(sf::Color::White);
+    sf::RenderWindow window(sf::VideoMode(900, 900), "SFML Chessboard");
+    lataaTekstuurit(); // Ladataan nappuloiden tekstuurit
     map<int, string> pieceMap = {
         {wP, "white-pawn"}, {wR, "white-rook"}, {wN, "white-knight"},
         {wB, "white-bishop"}, {wQ, "white-queen"}, {wK, "white-king"},
@@ -60,13 +76,13 @@ void sfml_gui(Asema& asema)
         for (int y = 0; y < 8; ++y) {
             for (int x = 0; x < 8; ++x) {
                 sf::RectangleShape tile(sf::Vector2f(tileSize, tileSize));
-                tile.setPosition(x * tileSize, y * tileSize);
+                tile.setPosition(x * tileSize + 50, y * tileSize + 50);
 
                 // Shakkilaudan ruutujen värit
                 if ((x + y) % 2 == 0)
-                    tile.setFillColor(sf::Color::Cyan);
+                    tile.setFillColor(darkBrown);
                 else
-                    tile.setFillColor(sf::Color::Blue);
+                    tile.setFillColor(lightBrown);
 
                 window.draw(tile);
 
@@ -75,12 +91,15 @@ void sfml_gui(Asema& asema)
                 if (pieceMap.find(piece) != pieceMap.end()) {
                     sf::Sprite sprite;
                     sprite.setTexture(textures[pieceMap[piece]]);
+                    sprite.setOrigin(-35,-35); 
                     sprite.setPosition(x * tileSize, y * tileSize);
                     window.draw(sprite);
+                    
                 }
             }
         }
-
+        window.draw(text);
+        window.draw(text2);
         window.display();
     }
 }
