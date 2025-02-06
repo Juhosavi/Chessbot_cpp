@@ -1,50 +1,31 @@
-#include <iostream>
-#include <vector>
-#include "asema.h"
-#include "siirto.h"
-using namespace std;
+#include <SFML/Graphics.hpp>
 
-int main() {
-    Asema asema;
-    vector<Siirto> siirrot;
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(640, 650), "SFML works!");
+    sf::RectangleShape shape(sf::Vector2f(100, 100));
+    sf::RectangleShape shape2(sf::Vector2f(100, 100));
+    sf::RectangleShape shape3(sf::Vector2f(100, 100));
+    shape.setFillColor(sf::Color::White);
+    shape2.setFillColor(sf::Color::Black);
+    shape3.setFillColor(sf::Color::White);
 
-    while (true) {
-        asema.tulosta();
-        siirrot.clear();
-        asema.anna_siirrot(siirrot);
-
-        std::cout << "Siirtoja: " << siirrot.size() << std::endl;
-
-        int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
-        Siirto kayttajan_siirto;
-
-        while (true) {
-            // Kutsutaan funktiota kysymään siirtoa
-            asema.kysy_siirto(asema._siirtovuoro, lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
-
-            // Luo käyttäjän syötettä vastaava siirto-olio
-            kayttajan_siirto = Siirto(lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
-
-            // Tarkista, löytyykö laillisista siirroista käyttäjän siirtoa vastaavaa oliota
-            bool laillinen_siirto = false;
-            for (const auto& s : siirrot) {
-                if (s == kayttajan_siirto) {
-                    laillinen_siirto = true;
-                    break;
-                }
-            }
-
-            if (laillinen_siirto) {
-                break; // Hyväksytään siirto ja poistutaan silmukasta
-            }
-            else {
-                std::cout << "Ei laillinen siirto! Yritä uudelleen." << std::endl;
-            }
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
         }
 
-        // Tehdään siirto
-        asema.tee_siirto(kayttajan_siirto, asema._siirtovuoro);
-        asema.anna_siirrot(siirrot);
+        window.clear();
+        window.draw(shape);
+        shape2.setPosition(100, 0);
+        window.draw(shape2);
+        shape3.setPosition(200, 0);
+        window.draw(shape3);
+        window.display();
     }
 
     return 0;
