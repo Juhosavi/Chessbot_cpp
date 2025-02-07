@@ -44,13 +44,13 @@ void sfml_gui(Asema& asema)
     text.setFont(font);
     text2.setFont(font);
     text.setString("         A        B        C        D        E        F        G        H");
-    text2.setString("\n\n 8 \n\n\n 7 \n\n\n 6 \n\n\n 5 \n\n\n4 \n\n\n3 \n\n\n2 \n\n\n1");
+    text2.setString("\n 8 \n\n 7 \n\n 6 \n\n 5 \n\n 4 \n\n 3 \n\n 2 \n\n 1");
     sf::Color darkBrown(139, 69, 19);  // Tummanruskea
     sf::Color lightBrown(222, 184, 135);  // Vaaleanruskea
 
 
     text.setCharacterSize(45);
-    text2.setCharacterSize(40);
+    text2.setCharacterSize(60);
     text.setFillColor(sf::Color::White);
     sf::RenderWindow window(sf::VideoMode(900, 900), "SFML Chessboard");
     lataaTekstuurit(); // Ladataan nappuloiden tekstuurit
