@@ -86,13 +86,17 @@ void sfml_gui(Asema& asema)
                         siirtoValittu = true;
                     }
                     else {
+                        bool validMove = false;
                         for (const auto& siirto : mahdollisetSiirrot) {
                             if (siirto._a_r == valittuRivi && siirto._a_l == valittuLinja && siirto._l_r == y && siirto._l_l == x) {
                                 valittuSiirto = siirto;
                                 asema.tee_siirto(valittuSiirto, asema._siirtovuoro);
-                                siirtoValittu = false;
+                                validMove = true;
                                 break;
                             }
+                        }
+                        if (!validMove) {
+                            siirtoValittu = false;
                         }
                     }
                 }
@@ -142,6 +146,7 @@ void sfml_gui(Asema& asema)
         window.display();
     }
 }
+
 
 // Tekstipohjainen shakkipeli komentorivillä
 void terminal_ui(Asema& asema) {
