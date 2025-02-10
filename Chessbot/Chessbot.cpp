@@ -25,7 +25,7 @@ void lataaTekstuurit() {
 
     for (const string& piece : pieces) {
         sf::Texture texture;
-        if (!texture.loadFromFile("C:/Users/savin/source/repos/Chessbot/pieces/" + piece + ".png")) {
+        if (!texture.loadFromFile("C:/GitHub/uusiChess/pieces/" + piece + ".png")) {
             cerr << "Virhe ladattaessa tekstuuria: " << piece << endl;
         }
         textures[piece] = texture;
@@ -37,8 +37,8 @@ void sfml_gui(Asema& asema)
 {
     sf::Font font;
     if (!font.loadFromFile("C:/Users/savin/source/repos/Chessbot/font/AldotheApache.ttf")) {
-		cerr << "Virhe ladattaessa fonttia!" << endl;
-	}
+        cerr << "Virhe ladattaessa fonttia!" << endl;
+    }
     sf::Text text;
     sf::Text text2;
     text.setFont(font);
@@ -47,7 +47,6 @@ void sfml_gui(Asema& asema)
     text2.setString("\n 8 \n\n 7 \n\n 6 \n\n 5 \n\n 4 \n\n 3 \n\n 2 \n\n 1");
     sf::Color darkBrown(139, 69, 19);  // Tummanruskea
     sf::Color lightBrown(222, 184, 135);  // Vaaleanruskea
-
 
     text.setCharacterSize(45);
     text2.setCharacterSize(60);
@@ -61,6 +60,11 @@ void sfml_gui(Asema& asema)
         {bB, "black-bishop"}, {bQ, "black-queen"}, {bK, "black-king"}
     };
 
+    vector<Siirto> mahdollisetSiirrot;
+    int valittuRivi = -1, valittuLinja = -1;
+    bool siirtoValittu = false;
+    Siirto valittuSiirto;
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -68,6 +72,31 @@ void sfml_gui(Asema& asema)
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+            {
+                int x = (event.mouseButton.x - 50) / tileSize;
+                int y = (event.mouseButton.y - 50) / tileSize;
+                if (x >= 0 && x < 8 && y >= 0 && y < 8)
+                {
+                    if (!siirtoValittu) {
+                        valittuRivi = y;
+                        valittuLinja = x;
+                        mahdollisetSiirrot.clear();
+                        asema.anna_siirrot(mahdollisetSiirrot);
+                        siirtoValittu = true;
+                    }
+                    else {
+                        for (const auto& siirto : mahdollisetSiirrot) {
+                            if (siirto._a_r == valittuRivi && siirto._a_l == valittuLinja && siirto._l_r == y && siirto._l_l == x) {
+                                valittuSiirto = siirto;
+                                asema.tee_siirto(valittuSiirto, asema._siirtovuoro);
+                                siirtoValittu = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         window.clear();
@@ -91,19 +120,25 @@ void sfml_gui(Asema& asema)
                 if (pieceMap.find(piece) != pieceMap.end()) {
                     sf::Sprite sprite;
                     sprite.setTexture(textures[pieceMap[piece]]);
-                    sprite.setOrigin(-35,-35); 
+                    sprite.setOrigin(-35, -35);
                     sprite.setPosition(x * tileSize, y * tileSize);
                     window.draw(sprite);
-                    
                 }
             }
         }
+
+        // Piirretään mahdolliset siirrot
+        for (const auto& siirto : mahdollisetSiirrot) {
+            if (siirto._a_r == valittuRivi && siirto._a_l == valittuLinja) {
+                sf::CircleShape circle(15);
+                circle.setFillColor(sf::Color(0, 255, 0, 150));
+                circle.setPosition(siirto._l_l * tileSize + 50 + 35, siirto._l_r * tileSize + 50 + 35);
+                window.draw(circle);
+            }
+        }
+
         window.draw(text);
         window.draw(text2);
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        {
-
-        }
         window.display();
     }
 }
