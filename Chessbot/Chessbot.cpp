@@ -27,7 +27,7 @@ void lataaTekstuurit() {
     // Ladataan tekstuurit kaikille nappuloille
     for (const string& piece : pieces) {
         sf::Texture texture;
-        if (!texture.loadFromFile("C:/GitHub/uusiChess/pieces/" + piece + ".png")) {
+        if (!texture.loadFromFile("C:/Users/terok/Documents/GitHub/Shakki/pieces/" + piece + ".png")) {
             cerr << "Virhe ladattaessa tekstuuria: " << piece << endl;
         }
         textures[piece] = texture;
@@ -154,56 +154,56 @@ void sfml_gui(Asema& asema)
     }
 }
 
-// Tekstipohjainen shakkipeli komentorivillä
-//void terminal_ui(Asema& asema) {
-//    vector<Siirto> siirrot;
-//
-//    while (true) {
-//        asema.tulosta();
-//        siirrot.clear();
-//        asema.anna_siirrot(siirrot);
-//
-//        cout << "Siirtoja: " << siirrot.size() << endl;
-//
-//        int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
-//        Siirto kayttajan_siirto;
-//
-//        while (true) {
-//            asema.kysy_siirto(asema._siirtovuoro, lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
-//
-//            kayttajan_siirto = Siirto(lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
-//
-//            bool laillinen_siirto = false;
-//            for (const auto& s : siirrot) {
-//                if (s == kayttajan_siirto) {
-//                    laillinen siirto = true;
-//                    break;
-//                }
-//            }
-//
-//            if (laillinen siirto) {
-//                break;
-//            }
-//            else {
-//                cout << "Ei laillinen siirto! Yritä uudelleen." << endl;
-//            }
-//        }
-//
-//        asema.tee_siirto(kayttajan_siirto, asema._siirtovuoro);
-//        asema.anna_siirrot(siirrot);
-//    }
-//}
+ //Tekstipohjainen shakkipeli komentorivillä
+void terminal_ui(Asema& asema) {
+    vector<Siirto> siirrot;
+
+    while (true) {
+        asema.tulosta();
+        siirrot.clear();
+        asema.anna_siirrot(siirrot);
+
+        cout << "Siirtoja: " << siirrot.size() << endl;
+
+        int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
+        Siirto kayttajan_siirto;
+
+        while (true) {
+            asema.kysy_siirto(asema._siirtovuoro, lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
+
+            kayttajan_siirto = Siirto(lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
+
+            bool laillinen_siirto = false;
+            for (const auto& s : siirrot) {
+                if (s == kayttajan_siirto) {
+                    laillinen_siirto = true;
+                    break;
+                }
+            }
+
+            if (laillinen_siirto) {
+                break;
+            }
+            else {
+                cout << "Ei laillinen siirto! Yritä uudelleen." << endl;
+            }
+        }
+
+        asema.tee_siirto(kayttajan_siirto, asema._siirtovuoro);
+        asema.anna_siirrot(siirrot);
+    }
+}
 
 int main() {
     Asema asema; // Luodaan Asema-olio
 
     // Luodaan säie SFML-grafiikalle
     thread t1(sfml_gui, ref(asema));
-    /*thread t2(terminal_ui, ref(asema));*/
+    thread t2(terminal_ui, ref(asema));
 
     // Odotetaan, että säie päättyy
     t1.join();
-    /*t2.join();*/
+    t2.join();
 
     return 0;
 }
