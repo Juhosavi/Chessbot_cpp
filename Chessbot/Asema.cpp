@@ -102,6 +102,20 @@ void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
     int kohde_rivi = siirto._l_r;
     int kohde_linja = siirto._l_l;
 
+    // Käsitellään ohestalyönti
+    if (siirto._ohestalyonti) {
+        int vastustajan_rivi = (pelaaja == VALKEA) ? kohde_rivi + 1 : kohde_rivi - 1;
+        _lauta[vastustajan_rivi][kohde_linja] = NA;
+    }
+
+    // Päivitetään kaksoisaskeleen linja
+    if (abs(lahto_rivi - kohde_rivi) == 2 && (_lauta[lahto_rivi][lahto_linja] == wP || _lauta[lahto_rivi][lahto_linja] == bP)) {
+        _kaksoisaskel_linjalla = kohde_linja;
+    }
+    else {
+        _kaksoisaskel_linjalla = -1;
+    }
+
     _lauta[kohde_rivi][kohde_linja] = _lauta[lahto_rivi][lahto_linja];
     _lauta[lahto_rivi][lahto_linja] = NA;
 
@@ -500,6 +514,13 @@ void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vec
     if (linja < 8 && on_vastustajan_nappula(_lauta[rivi + suunta][linja + 1], pelaaja))
     {
         siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1));
+    }
+    // Ohestalyönti
+    if (_kaksoisaskel_linjalla != -1 && (linja == _kaksoisaskel_linjalla - 1 || linja == _kaksoisaskel_linjalla + 1)) {
+        if ((pelaaja == VALKEA && rivi == 3) || (pelaaja == MUSTA && rivi == 4)) {
+            int ohestalyonti_rivi = (pelaaja == VALKEA) ? 2 : 5;
+            siirrot.push_back(Siirto(rivi, linja, ohestalyonti_rivi, _kaksoisaskel_linjalla, true));
+        }
     }
 }
 

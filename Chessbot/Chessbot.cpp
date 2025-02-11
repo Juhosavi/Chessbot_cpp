@@ -115,9 +115,9 @@ void sfml_gui(Asema& asema)
 
                 // Shakkilaudan ruutujen v‰rit
                 if ((x + y) % 2 == 0)
-                    tile.setFillColor(darkBrown); // Tummanruskea ruutu
+                    tile.setFillColor(lightBrown); // Tummanruskea ruutu
                 else
-                    tile.setFillColor(lightBrown); // Vaaleanruskea ruutu
+                    tile.setFillColor(darkBrown); // Vaaleanruskea ruutu
 
                 window.draw(tile); // Piirret‰‰n ruutu
 
