@@ -158,9 +158,16 @@ void sfml_gui(Asema& asema)
 void terminal_ui(Asema& asema) {
     vector<Siirto> siirrot;
     while (true) {
+
         asema.tulosta();
+        MinimaxArvo minimaxTulos = asema.minimax(3);
+        std::cout << "Minimax Arvo: " << minimaxTulos._arvo << std::endl;
+        std::cout << "Paras siirto: ";
+        std::cout << "Lahto: " << minimaxTulos._siirto._a_r << ", " << minimaxTulos._siirto._a_l
+            << " -> Kohde: " << minimaxTulos._siirto._l_r << ", " << minimaxTulos._siirto._l_l << std::endl;
         siirrot.clear();
         asema.anna_siirrot(siirrot);
+      
 
         cout << "Siirtoja: " << siirrot.size() << endl;
 
@@ -195,6 +202,10 @@ void terminal_ui(Asema& asema) {
 
 int main() {
     Asema asema; // Luodaan Asema-olio
+    asema.tyhjenna();
+    asema._lauta[5][6] = bK;
+    asema._lauta[7][7] = wK;
+    asema._lauta[6][5] = bQ;
 
     // Luodaan säie SFML-grafiikalle
     //thread t1(sfml_gui, ref(asema));
