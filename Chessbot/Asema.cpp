@@ -127,6 +127,9 @@ void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
                 _lauta[7][3] = wR;
                 _lauta[7][0] = NA;
             }
+            // Asetetaan linnoitusliput falseksi, kun valkoinen kuningas liikkuu
+            _valkea_lyhyt_linna_sallittu = false;
+            _valkea_pitka_linna_sallittu = false;
         }
         else if (pelaaja == MUSTA) {
             if (lahto_linja == 4 && kohde_linja == 6 && _musta_lyhyt_linna_sallittu) { // Mustan lyhyt linnoitus
@@ -137,6 +140,29 @@ void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
                 _lauta[0][3] = bR;
                 _lauta[0][0] = NA;
             }
+            // Asetetaan linnoitusliput falseksi, kun musta kuningas liikkuu
+            _musta_lyhyt_linna_sallittu = false;
+            _musta_pitka_linna_sallittu = false;
+        }
+    }
+
+    // Asetetaan linnoitusliput falseksi, kun valkoinen torni liikkuu
+    if (_lauta[lahto_rivi][lahto_linja] == wR) {
+        if (lahto_rivi == 7 && lahto_linja == 0) {
+            _valkea_pitka_linna_sallittu = false;
+        }
+        if (lahto_rivi == 7 && lahto_linja == 7) {
+            _valkea_lyhyt_linna_sallittu = false;
+        }
+    }
+
+    // Asetetaan linnoitusliput falseksi, kun musta torni liikkuu
+    if (_lauta[lahto_rivi][lahto_linja] == bR) {
+        if (lahto_rivi == 0 && lahto_linja == 0) {
+            _musta_pitka_linna_sallittu = false;
+        }
+        if (lahto_rivi == 0 && lahto_linja == 7) {
+            _musta_lyhyt_linna_sallittu = false;
         }
     }
 
