@@ -116,13 +116,35 @@ void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
         _kaksoisaskel_linjalla = -1;
     }
 
+    // Tarkistetaan, onko kyseessä linnoitus
+    if (_lauta[lahto_rivi][lahto_linja] == wK || _lauta[lahto_rivi][lahto_linja] == bK) {
+        if (pelaaja == VALKEA) {
+            if (lahto_linja == 4 && kohde_linja == 6 && _valkea_lyhyt_linna_sallittu) { // Valkoisen lyhyt linnoitus
+                _lauta[7][5] = wR;
+                _lauta[7][7] = NA;
+            }
+            else if (lahto_linja == 4 && kohde_linja == 2 && _valkea_pitka_linna_sallittu) { // Valkoisen pitkä linnoitus
+                _lauta[7][3] = wR;
+                _lauta[7][0] = NA;
+            }
+        }
+        else if (pelaaja == MUSTA) {
+            if (lahto_linja == 4 && kohde_linja == 6 && _musta_lyhyt_linna_sallittu) { // Mustan lyhyt linnoitus
+                _lauta[0][5] = bR;
+                _lauta[0][7] = NA;
+            }
+            else if (lahto_linja == 4 && kohde_linja == 2 && _musta_pitka_linna_sallittu) { // Mustan pitkä linnoitus
+                _lauta[0][3] = bR;
+                _lauta[0][0] = NA;
+            }
+        }
+    }
+
     _lauta[kohde_rivi][kohde_linja] = _lauta[lahto_rivi][lahto_linja];
     _lauta[lahto_rivi][lahto_linja] = NA;
 
     // Vaihdetaan vuoroa
     _siirtovuoro = (_siirtovuoro == VALKEA) ? MUSTA : VALKEA;
-
-
 }
 
 void Asema::kysy_siirto(int pelaaja, int& lahto_rivi, int& lahto_linja, int& kohde_rivi, int& kohde_linja)
@@ -167,6 +189,28 @@ bool Asema::onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const
     int rivi = siirto._a_r;
     int linja = siirto._a_l;
     int nappula = _lauta[rivi][linja];
+
+    // Tarkistetaan, onko kyseessä linnoitus
+    if (pelaaja == VALKEA) {
+        if (siirto._a_r == 7 && siirto._a_l == 4) {
+            if (siirto._l_l == 6 && _valkea_lyhyt_linna_sallittu) { // Lyhyt linnoitus
+                return true;
+            }
+            else if (siirto._l_l == 2 && _valkea_pitka_linna_sallittu) { // Pitkä linnoitus
+                return true;
+            }
+        }
+    }
+    else if (pelaaja == MUSTA) {
+        if (siirto._a_r == 0 && siirto._a_l == 4) {
+            if (siirto._l_l == 6 && _musta_lyhyt_linna_sallittu) { // Lyhyt linnoitus
+                return true;
+            }
+            else if (siirto._l_l == 2 && _musta_pitka_linna_sallittu) { // Pitkä linnoitus
+                return true;
+            }
+        }
+    }
 
     // Varmistetaan, että nappula kuuluu pelaajalle
     if ((pelaaja == VALKEA && !(nappula >= wR && nappula <= wP)) ||
@@ -467,6 +511,23 @@ void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::ve
                 siirrot.push_back(Siirto(rivi, linja, uusi_rivi, uusi_linja));
             }
 
+        }
+    }
+    // Tarkistetaan linnoitusmahdollisuudet
+    if (pelaaja == VALKEA && rivi == 7 && linja == 4) {
+        if (_valkea_lyhyt_linna_sallittu && _lauta[7][5] == NA && _lauta[7][6] == NA) {
+            siirrot.push_back(Siirto(7, 4, 7, 6)); // Lyhyt linnoitus
+        }
+        if (_valkea_pitka_linna_sallittu && _lauta[7][3] == NA && _lauta[7][2] == NA && _lauta[7][1] == NA) {
+            siirrot.push_back(Siirto(7, 4, 7, 2)); // Pitkä linnoitus
+        }
+    }
+    else if (pelaaja == MUSTA && rivi == 0 && linja == 4) {
+        if (_musta_lyhyt_linna_sallittu && _lauta[0][5] == NA && _lauta[0][6] == NA) {
+            siirrot.push_back(Siirto(0, 4, 0, 6)); // Lyhyt linnoitus
+        }
+        if (_musta_pitka_linna_sallittu && _lauta[0][3] == NA && _lauta[0][2] == NA && _lauta[0][1] == NA) {
+            siirrot.push_back(Siirto(0, 4, 0, 2)); // Pitkä linnoitus
         }
     }
 }
