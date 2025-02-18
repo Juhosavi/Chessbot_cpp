@@ -102,13 +102,80 @@ void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
     int kohde_rivi = siirto._l_r;
     int kohde_linja = siirto._l_l;
 
+    // Käsitellään ohestalyönti
+    if (siirto._ohestalyonti) {
+        int vastustajan_rivi = (pelaaja == VALKEA) ? kohde_rivi + 1 : kohde_rivi - 1;
+        _lauta[vastustajan_rivi][kohde_linja] = NA;
+    }
+
+    // Päivitetään kaksoisaskeleen linja
+    if (abs(lahto_rivi - kohde_rivi) == 2 && (_lauta[lahto_rivi][lahto_linja] == wP || _lauta[lahto_rivi][lahto_linja] == bP)) {
+        _kaksoisaskel_linjalla = kohde_linja;
+    }
+    else {
+        _kaksoisaskel_linjalla = -1;
+    }
+
+    // Tarkistetaan, onko kyseessä linnoitus
+    if (_lauta[lahto_rivi][lahto_linja] == wK || _lauta[lahto_rivi][lahto_linja] == bK) {
+        if (pelaaja == VALKEA) {
+            if (lahto_linja == 4 && kohde_linja == 6 && _valkea_lyhyt_linna_sallittu) { // Valkoisen lyhyt linnoitus
+                _lauta[7][5] = wR;
+                _lauta[7][7] = NA;
+            }
+            else if (lahto_linja == 4 && kohde_linja == 2 && _valkea_pitka_linna_sallittu) { // Valkoisen pitkä linnoitus
+                _lauta[7][3] = wR;
+                _lauta[7][0] = NA;
+            }
+            // Asetetaan linnoitusliput falseksi, kun valkoinen kuningas liikkuu
+            _valkea_lyhyt_linna_sallittu = false;
+            _valkea_pitka_linna_sallittu = false;
+        }
+        else if (pelaaja == MUSTA) {
+            if (lahto_linja == 4 && kohde_linja == 6 && _musta_lyhyt_linna_sallittu) { // Mustan lyhyt linnoitus
+                _lauta[0][5] = bR;
+                _lauta[0][7] = NA;
+            }
+            else if (lahto_linja == 4 && kohde_linja == 2 && _musta_pitka_linna_sallittu) { // Mustan pitkä linnoitus
+                _lauta[0][3] = bR;
+                _lauta[0][0] = NA;
+            }
+            // Asetetaan linnoitusliput falseksi, kun musta kuningas liikkuu
+            _musta_lyhyt_linna_sallittu = false;
+            _musta_pitka_linna_sallittu = false;
+        }
+    }
+
+    // Asetetaan linnoitusliput falseksi, kun valkoinen torni liikkuu
+    if (_lauta[lahto_rivi][lahto_linja] == wR) {
+        if (lahto_rivi == 7 && lahto_linja == 0) {
+            _valkea_pitka_linna_sallittu = false;
+        }
+        if (lahto_rivi == 7 && lahto_linja == 7) {
+            _valkea_lyhyt_linna_sallittu = false;
+        }
+    }
+
+    // Asetetaan linnoitusliput falseksi, kun musta torni liikkuu
+    if (_lauta[lahto_rivi][lahto_linja] == bR) {
+        if (lahto_rivi == 0 && lahto_linja == 0) {
+            _musta_pitka_linna_sallittu = false;
+        }
+        if (lahto_rivi == 0 && lahto_linja == 7) {
+            _musta_lyhyt_linna_sallittu = false;
+        }
+    }
+
     _lauta[kohde_rivi][kohde_linja] = _lauta[lahto_rivi][lahto_linja];
     _lauta[lahto_rivi][lahto_linja] = NA;
 
+    // Tarkistetaan, onko sotilas päätyssä ja edetään ylennys
+    if ((_lauta[kohde_rivi][kohde_linja] == wP && kohde_rivi == 0) || (_lauta[kohde_rivi][kohde_linja] == bP && kohde_rivi == 7)) {
+        _lauta[kohde_rivi][kohde_linja] = (pelaaja == VALKEA) ? wQ : bQ; // Muutetaan sotilas kuningattareksi
+    }
+
     // Vaihdetaan vuoroa
     _siirtovuoro = (_siirtovuoro == VALKEA) ? MUSTA : VALKEA;
-
-
 }
 
 void Asema::kysy_siirto(int pelaaja, int& lahto_rivi, int& lahto_linja, int& kohde_rivi, int& kohde_linja)
@@ -153,6 +220,28 @@ bool Asema::onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const
     int rivi = siirto._a_r;
     int linja = siirto._a_l;
     int nappula = _lauta[rivi][linja];
+
+    // Tarkistetaan, onko kyseessä linnoitus
+    if (pelaaja == VALKEA) {
+        if (siirto._a_r == 7 && siirto._a_l == 4) {
+            if (siirto._l_l == 6 && _valkea_lyhyt_linna_sallittu) { // Lyhyt linnoitus
+                return true;
+            }
+            else if (siirto._l_l == 2 && _valkea_pitka_linna_sallittu) { // Pitkä linnoitus
+                return true;
+            }
+        }
+    }
+    else if (pelaaja == MUSTA) {
+        if (siirto._a_r == 0 && siirto._a_l == 4) {
+            if (siirto._l_l == 6 && _musta_lyhyt_linna_sallittu) { // Lyhyt linnoitus
+                return true;
+            }
+            else if (siirto._l_l == 2 && _musta_pitka_linna_sallittu) { // Pitkä linnoitus
+                return true;
+            }
+        }
+    }
 
     // Varmistetaan, että nappula kuuluu pelaajalle
     if ((pelaaja == VALKEA && !(nappula >= wR && nappula <= wP)) ||
@@ -455,6 +544,23 @@ void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::ve
 
         }
     }
+    // Tarkistetaan linnoitusmahdollisuudet
+    if (pelaaja == VALKEA && rivi == 7 && linja == 4) {
+        if (_valkea_lyhyt_linna_sallittu && _lauta[7][5] == NA && _lauta[7][6] == NA) {
+            siirrot.push_back(Siirto(7, 4, 7, 6)); // Lyhyt linnoitus
+        }
+        if (_valkea_pitka_linna_sallittu && _lauta[7][3] == NA && _lauta[7][2] == NA && _lauta[7][1] == NA) {
+            siirrot.push_back(Siirto(7, 4, 7, 2)); // Pitkä linnoitus
+        }
+    }
+    else if (pelaaja == MUSTA && rivi == 0 && linja == 4) {
+        if (_musta_lyhyt_linna_sallittu && _lauta[0][5] == NA && _lauta[0][6] == NA) {
+            siirrot.push_back(Siirto(0, 4, 0, 6)); // Lyhyt linnoitus
+        }
+        if (_musta_pitka_linna_sallittu && _lauta[0][3] == NA && _lauta[0][2] == NA && _lauta[0][1] == NA) {
+            siirrot.push_back(Siirto(0, 4, 0, 2)); // Pitkä linnoitus
+        }
+    }
 }
 void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
@@ -500,6 +606,13 @@ void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vec
     if (linja < 8 && on_vastustajan_nappula(_lauta[rivi + suunta][linja + 1], pelaaja))
     {
         siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1));
+    }
+    // Ohestalyönti
+    if (_kaksoisaskel_linjalla != -1 && (linja == _kaksoisaskel_linjalla - 1 || linja == _kaksoisaskel_linjalla + 1)) {
+        if ((pelaaja == VALKEA && rivi == 3) || (pelaaja == MUSTA && rivi == 4)) {
+            int ohestalyonti_rivi = (pelaaja == VALKEA) ? 2 : 5;
+            siirrot.push_back(Siirto(rivi, linja, ohestalyonti_rivi, _kaksoisaskel_linjalla, true));
+        }
     }
 }
 

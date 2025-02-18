@@ -8,11 +8,17 @@ class Siirto
 {
 public:
     // Oletuskonstruktori (ei tee oikeastaan mitään).
-    Siirto() {}
+    Siirto() 
+    {}
 
     // Alustaa siirron koordinaateista. (a_r, a_l) => (l_r, l_l)
     Siirto(int a_r, int a_l, int l_r, int l_l) :
         _a_r(a_r), _a_l(a_l), _l_r(l_r), _l_l(l_l)
+    {
+    }
+    // Alustaa siirron koordinaateista ja ohestalyönti-flagilla. (a_r, a_l) => (l_r, l_l), ohestalyonti
+    Siirto(int a_r, int a_l, int l_r, int l_l, bool ohestalyonti) :
+        _a_r(a_r), _a_l(a_l), _l_r(l_r), _l_l(l_l), _ohestalyonti(ohestalyonti)
     {
     }
 
@@ -33,10 +39,12 @@ public:
     int _korotettava_nappula = NA; // Korotusnappula, esim. wQ, bR
     bool _ohestalyonti = false;
 
+
     // Operaattori ==
     bool operator==(const Siirto& other) const {
         return _a_r == other._a_r && _a_l == other._a_l &&
-            _l_r == other._l_r && _l_l == other._l_l;
+            _l_r == other._l_r && _l_l == other._l_l &&
+            _ohestalyonti == other._ohestalyonti;
     }
 
   friend class Asema;
