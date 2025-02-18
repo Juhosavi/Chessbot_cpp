@@ -169,6 +169,11 @@ void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
     _lauta[kohde_rivi][kohde_linja] = _lauta[lahto_rivi][lahto_linja];
     _lauta[lahto_rivi][lahto_linja] = NA;
 
+    // Tarkistetaan, onko sotilas p‰‰tyss‰ ja edet‰‰n ylennys
+    if ((_lauta[kohde_rivi][kohde_linja] == wP && kohde_rivi == 0) || (_lauta[kohde_rivi][kohde_linja] == bP && kohde_rivi == 7)) {
+        _lauta[kohde_rivi][kohde_linja] = (pelaaja == VALKEA) ? wQ : bQ; // Muutetaan sotilas kuningattareksi
+    }
+
     // Vaihdetaan vuoroa
     _siirtovuoro = (_siirtovuoro == VALKEA) ? MUSTA : VALKEA;
 }
