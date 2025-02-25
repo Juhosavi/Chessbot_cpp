@@ -172,10 +172,11 @@ void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
 
     //Suoriteaan korotus
     if (siirto._korotettava_nappula != NA)
-	{
+    {
         _lauta[lahto_rivi][lahto_linja] = NA;
         _lauta[kohde_rivi][kohde_linja] = siirto._korotettava_nappula;
     }
+
 
     // Vaihdetaan vuoroa
     _siirtovuoro = (_siirtovuoro == VALKEA) ? MUSTA : VALKEA;
@@ -602,10 +603,11 @@ void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vec
     {
         if (rivi + suunta == ylennysrivi)
         {
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja, wQ));
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja, wR));
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja, wB));
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja, wN));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja, false, (pelaaja == VALKEA ? wQ : bQ)));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja, false, (pelaaja == VALKEA ? wR : bR)));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja, false, (pelaaja == VALKEA ? wB : bB)));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja, false, (pelaaja == VALKEA ? wN : bN)));
+
         }
         else
         {
@@ -618,16 +620,15 @@ void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vec
             siirrot.push_back(Siirto(rivi, linja, rivi + 2 * suunta, linja));
         }
     }
-
-    // Lyönti kulmittain vasemmalle
+    //syönti kulmittain vaasemmalle
     if (linja > 0 && on_vastustajan_nappula(_lauta[rivi + suunta][linja - 1], pelaaja))
     {
         if (rivi + suunta == ylennysrivi)
         {
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja - 1, wQ));
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja - 1, wR));
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja - 1, wB));
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja - 1, wN));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja - 1, false, (pelaaja == VALKEA ? wQ : bQ)));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja - 1, false, (pelaaja == VALKEA ? wR : bR)));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja - 1, false, (pelaaja == VALKEA ? wB : bB)));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja - 1, false, (pelaaja == VALKEA ? wN : bN)));
         }
         else
         {
@@ -640,10 +641,10 @@ void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vec
     {
         if (rivi + suunta == ylennysrivi)
         {
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1, wQ));
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1, wR));
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1, wB));
-            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1, wN));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1, false, (pelaaja == VALKEA ? wQ : bQ)));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1, false, (pelaaja == VALKEA ? wR : bR)));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1, false, (pelaaja == VALKEA ? wB : bB)));
+            siirrot.push_back(Siirto(rivi, linja, rivi + suunta, linja + 1, false, (pelaaja == VALKEA ? wN : bN)));
         }
         else
         {
