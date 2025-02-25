@@ -206,6 +206,16 @@ void terminal_ui(Asema& asema) {
         asema.tulosta();
         siirrot.clear();
         asema.anna_siirrot(siirrot);
+        MinimaxArvo minimaxTulos = asema.minimax(3);
+        std::cout << "Minimax Arvo: " << minimaxTulos._arvo << std::endl;
+        std::cout << "Paras siirto: "
+            << "Lahto: "
+            << static_cast<char>('a' + minimaxTulos._siirto._a_l)
+            << static_cast<char>('1' + (7 - minimaxTulos._siirto._a_r))
+            << " -> Kohde: "
+            << static_cast<char>('a' + minimaxTulos._siirto._l_l)
+            << static_cast<char>('1' + (7 - minimaxTulos._siirto._l_r))
+            << std::endl;
         cout << "Siirtoja: " << siirrot.size() << endl;
         int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
         Siirto kayttajan_siirto;
