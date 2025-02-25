@@ -208,17 +208,17 @@ void terminal_ui(Asema& asema) {
 
 int main() {
     Asema asema; // Luodaan Asema-olio
-    asema.tyhjenna();
-    asema._lauta[5][6] = bK;
-    asema._lauta[7][7] = wK;
-    asema._lauta[6][5] = bQ;
+    //asema.tyhjenna();
+    //asema._lauta[5][6] = bK;
+    //asema._lauta[7][7] = wK;
+    //asema._lauta[6][5] = bQ;
 
     // Luodaan s‰ie SFML-grafiikalle
-    //thread t1(sfml_gui, ref(asema));
+    thread t1(sfml_gui, ref(asema));
     thread t2(terminal_ui, ref(asema));
 
     // Odotetaan, ett‰ s‰ie p‰‰ttyy
-    //t1.join();
+    t1.join();
     t2.join();
 
     return 0;
