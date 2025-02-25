@@ -27,7 +27,7 @@ void lataaTekstuurit() {
     // Ladataan tekstuurit kaikille nappuloille
     for (const string& piece : pieces) {
         sf::Texture texture;
-        if (!texture.loadFromFile("C:/Users/terok/Documents/GitHub/Shakki/pieces/" + piece + ".png")) {
+        if (!texture.loadFromFile("C:/GitHub/uusiChess/pieces/" + piece + ".png")) {
             cerr << "Virhe ladattaessa tekstuuria: " << piece << endl;
         }
         textures[piece] = texture;
