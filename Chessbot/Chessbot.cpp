@@ -25,7 +25,7 @@ void lataaTekstuurit() {
 
     for (const string& piece : pieces) {
         sf::Texture texture;
-        if (!texture.loadFromFile("C:/Users/savin/source/repos/Chessbot/pieces/" + piece + ".png")) {
+        if (!texture.loadFromFile("C:/GitHub/uusiChess/pieces/" + piece + ".png")) {
             cerr << "Virhe ladattaessa tekstuuria: " << piece << endl;
         }
         textures[piece] = texture;
@@ -242,6 +242,19 @@ void terminal_ui(Asema& asema) {
 int main() {
     Asema asema;
     // Luodaan säikeet graafiselle ja tekstipohjaiselle käyttöliittymälle
+
+    //Linnoitus asetelma
+    asema.tyhjenna();
+
+    asema._lauta[7][4] = wK;
+    asema._lauta[7][7] = wR;
+    asema._lauta[7][0] = wR;
+    asema._lauta[0][4] = bK;
+    asema._lauta[0][0] = bR;
+    asema._lauta[0][7] = bR;
+    asema._lauta[6][0] = wP;
+
+
     thread t1(sfml_gui, ref(asema));
     thread t2(terminal_ui, ref(asema));
     t1.join();
