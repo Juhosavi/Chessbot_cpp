@@ -69,6 +69,7 @@ public:
 	void anna_siirrot(std::vector<Siirto>& siirrot) const;
 	bool onko_ruutu_uhattu(int rivi, int linja, int uhkaava_pelaaja) const;
 	void tulosta() const;
+	void hae_linnoitukset(int pelaaja, int rivi, int linja, std::vector<Siirto>& siirrot) const;
 	void etsi_kuningas(int nappula, int& rivi, int& linja) const;
 	bool on_vastustajan_nappula(int ruutu, int pelaaja) const;
 	bool onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const;
