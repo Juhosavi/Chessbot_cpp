@@ -17,20 +17,38 @@ map<string, sf::Texture> textures;
 
 // Lataa kaikki shakkipelin nappulat
 void lataaTekstuurit() {
-    vector<string> pieces = {
+    std::vector<std::string> pieces = {
         "black-bishop", "black-king", "black-knight", "black-pawn",
         "black-queen", "black-rook", "white-bishop", "white-king",
         "white-knight", "white-pawn", "white-queen", "white-rook"
     };
 
-    for (const string& piece : pieces) {
+    std::vector<std::string> paths = {
+        "C:/Users/terok/Documents/GitHub/Shakki/pieces/",
+        "C:/GitHub/uusiChess/pieces/",
+        "C:/Users/savin/source/repos/Chessbot/pieces/"
+    };
+
+    for (const std::string& piece : pieces) {
         sf::Texture texture;
-        if (!texture.loadFromFile("C:/Users/savin/source/repos/Chessbot/pieces/" + piece + ".png")) {
-            cerr << "Virhe ladattaessa tekstuuria: " << piece << endl;
+        bool loaded = false;
+
+        for (const std::string& path : paths) {
+            if (texture.loadFromFile(path + piece + ".png")) {
+                loaded = true;
+                break;
+            }
         }
-        textures[piece] = texture;
+
+        if (!loaded) {
+            std::cerr << "Virhe ladattaessa tekstuuria: " << piece << std::endl;
+        }
+        else {
+            textures[piece] = texture;
+        }
     }
 }
+
 
 // Näytä ylennysvalinta SFML-ikkunassa ja anna käyttäjän valinta
 // Tämä funktio odottaa, että käyttäjä klikkaa jonkin valinnan alueen.
