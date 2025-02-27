@@ -549,8 +549,6 @@ void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::ve
         }
     }
   
-    //lis‰‰ linnoitus siirto kutsutaan siirto generaattorista vasta raakasiirrot j‰lkeen 
-    //linnoituksen lis‰‰minen erikseen anna kaikki raakasiirrot sen j‰lkeen 
 }
 void Asema::hae_linnoitukset(int pelaaja, int rivi, int linja, std::vector<Siirto>& siirrot) const
 {
@@ -579,8 +577,7 @@ void Asema::hae_linnoitukset(int pelaaja, int rivi, int linja, std::vector<Siirt
         }
     }
 }
-void Asema::anna_sotilas_raakasiirrot(int rivi, int linja
-, int pelaaja, std::vector<Siirto>& siirrot) const
+void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
 {
     int suunta;
     if (pelaaja == VALKEA)
@@ -676,14 +673,23 @@ void Asema::anna_sotilas_raakasiirrot(int rivi, int linja
 }
 
 void Asema::anna_kaikki_raakasiirrot(int pelaaja, std::vector<Siirto>& siirrot) const
-{
+{   
+    int rivi = 0;
+    int sarake = 0;
     // K‰yd‰‰n l‰pi kaikki ruudut
     for (int rivi = 0; rivi < 8; rivi++)
     {
         for (int sarake = 0; sarake < 8; sarake++)
         {
             int nappula = _lauta[rivi][sarake];
-
+            if (_siirtovuoro == VALKEA && nappula == wK)
+            {
+                hae_linnoitukset(pelaaja, rivi, sarake, siirrot);
+            }
+            if (_siirtovuoro == MUSTA && nappula == bK)
+            {
+                hae_linnoitukset(pelaaja, rivi, sarake, siirrot);
+            }
             if (pelaaja == VALKEA && nappula == wR) {
                 anna_tornin_raakasiirrot(rivi, sarake, pelaaja, siirrot);
             }
@@ -716,11 +722,13 @@ void Asema::anna_kaikki_raakasiirrot(int pelaaja, std::vector<Siirto>& siirrot) 
             }
             else if (pelaaja == MUSTA && nappula == bK) {
                 anna_kuningas_raakasiirrot(rivi, sarake, pelaaja, siirrot);
+                
             }
             else if (pelaaja == MUSTA && nappula == bP) {
                 anna_sotilas_raakasiirrot(rivi, sarake, pelaaja, siirrot);
             }
         }
+        
     }
 }
 
