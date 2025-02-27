@@ -548,32 +548,39 @@ void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, std::ve
 
         }
     }
+  
+    //lis‰‰ linnoitus siirto kutsutaan siirto generaattorista vasta raakasiirrot j‰lkeen 
+    //linnoituksen lis‰‰minen erikseen anna kaikki raakasiirrot sen j‰lkeen 
+}
+void Asema::hae_linnoitukset(int pelaaja, int rivi, int linja, std::vector<Siirto>& siirrot) const
+{
     // Tarkistetaan linnoitusmahdollisuudet
     if (pelaaja == VALKEA && rivi == 7 && linja == 4)
     {
-        if (_valkea_lyhyt_linna_sallittu && _lauta[7][5] == NA  && !onko_ruutu_uhattu(7, 4, MUSTA) && !onko_ruutu_uhattu(7, 5, MUSTA))
+        if (_valkea_lyhyt_linna_sallittu && _lauta[7][5] == NA && !onko_ruutu_uhattu(7, 4, MUSTA) && !onko_ruutu_uhattu(7, 5, MUSTA))
         {
             siirrot.push_back(Siirto(7, 4, 7, 6)); // Lyhyt linnoitus
         }
-        if (_valkea_pitka_linna_sallittu && _lauta[7][3] == NA  && !onko_ruutu_uhattu(7, 4, MUSTA) && !onko_ruutu_uhattu(7, 3, MUSTA))
+        if (_valkea_pitka_linna_sallittu && _lauta[7][3] == NA && !onko_ruutu_uhattu(7, 4, MUSTA) && !onko_ruutu_uhattu(7, 3, MUSTA))
         {
             siirrot.push_back(Siirto(7, 4, 7, 2)); // Pitk‰ linnoitus
         }
     }
-        
-    else if (pelaaja == MUSTA && rivi == 0 && linja == 4) 
-{
-        if (_musta_lyhyt_linna_sallittu && _lauta[0][5] == NA && !onko_ruutu_uhattu(0, 4, VALKEA) && !onko_ruutu_uhattu(0,5, VALKEA))
+
+    else if (pelaaja == MUSTA && rivi == 0 && linja == 4)
+    {
+        if (_musta_lyhyt_linna_sallittu && _lauta[0][5] == NA && !onko_ruutu_uhattu(0, 4, VALKEA) && !onko_ruutu_uhattu(0, 5, VALKEA))
         {
             siirrot.push_back(Siirto(0, 4, 0, 6)); // Lyhyt linnoitus
         }
-        if (_musta_pitka_linna_sallittu && _lauta[0][3] == NA && !onko_ruutu_uhattu(0, 4, VALKEA) && !onko_ruutu_uhattu(0, 3, VALKEA)) 
+        if (_musta_pitka_linna_sallittu && _lauta[0][3] == NA && !onko_ruutu_uhattu(0, 4, VALKEA) && !onko_ruutu_uhattu(0, 3, VALKEA))
         {
             siirrot.push_back(Siirto(0, 4, 0, 2)); // Pitk‰ linnoitus
         }
     }
 }
-void Asema::anna_sotilas_raakasiirrot(int rivi, int linja, int pelaaja, std::vector<Siirto>& siirrot) const
+void Asema::anna_sotilas_raakasiirrot(int rivi, int linja
+, int pelaaja, std::vector<Siirto>& siirrot) const
 {
     int suunta;
     if (pelaaja == VALKEA)
@@ -720,19 +727,17 @@ void Asema::anna_kaikki_raakasiirrot(int pelaaja, std::vector<Siirto>& siirrot) 
 
 bool Asema::onko_ruutu_uhattu(int rivi, int linja, int uhkaava_pelaaja) const
 {
-    //tarkistaa onko ruutu uhattu ja osuuko joku t‰h‰n ruutuun
     std::vector<Siirto> raakasiirrot;
     anna_kaikki_raakasiirrot(uhkaava_pelaaja, raakasiirrot);
-    for (auto& rs : raakasiirrot)
-	{
-		if (rs._l_r == rivi && rs._l_l == linja)
-		{
-			return true;
-            std::cout << "UHATTU!";
-		}
-	}
+
+    for (const auto& rs : raakasiirrot)
+    {
+        if (rs._l_r == rivi && rs._l_l == linja)
+        {
+            return true;
+        }
+    }
     return false;
-    std::cout << "EI UHATTU";
 }
 
 void Asema::anna_siirrot(std::vector<Siirto>& siirrot) const
