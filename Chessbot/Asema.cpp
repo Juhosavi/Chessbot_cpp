@@ -785,7 +785,7 @@ float Asema::pisteyta_lopputulos() const
        
         int k_rivi, k_linja;
         etsi_kuningas(wK, k_rivi, k_linja);
-        if (onko_ruutu_uhattu(k_rivi, k_linja, VALKEA) == true)
+        if (onko_ruutu_uhattu(k_rivi, k_linja, MUSTA) == true)
         {
             return -1000000;
       
@@ -800,7 +800,7 @@ float Asema::pisteyta_lopputulos() const
         
         int k_rivi, k_linja;
         etsi_kuningas(bK, k_rivi, k_linja);
-        if (onko_ruutu_uhattu(k_rivi, k_linja, MUSTA) == true)
+        if (onko_ruutu_uhattu(k_rivi, k_linja, VALKEA) == true)
         {
             return 1000000;
            

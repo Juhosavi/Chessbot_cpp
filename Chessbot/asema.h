@@ -191,7 +191,7 @@ public:
 
 	
 	float evaluoi() const {
-		return 1.0f * materiaali() + 0.1f * mobiliteetti();
+		return 1.0f * materiaali();
 	}
 
 };

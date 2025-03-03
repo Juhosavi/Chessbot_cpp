@@ -206,7 +206,7 @@ void terminal_ui(Asema& asema) {
         asema.tulosta();
         siirrot.clear();
         asema.anna_siirrot(siirrot);
-        MinimaxArvo minimaxTulos = asema.minimax(3);
+        MinimaxArvo minimaxTulos = asema.minimax(4);
         std::cout << "Minimax Arvo: " << minimaxTulos._arvo << std::endl;
         std::cout << "Paras siirto: "
             << "Lahto: "
