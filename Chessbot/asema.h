@@ -73,66 +73,72 @@ public:
 	void etsi_kuningas(int nappula, int& rivi, int& linja) const;
 	bool on_vastustajan_nappula(int ruutu, int pelaaja) const;
 	bool onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const;
-	float pisteyta_lopputulos() const;
+	float pisteyta_lopputulos(int syvyys) const;
 	void tyhjenna();
 
 //------------------------UUSI KOODI------------------------
 
 	MinimaxArvo minimax(int syvyys)
 	{
-		// Generoidaan aseman siirrot.
 		vector<Siirto> siirrot;
 		anna_siirrot(siirrot);
 
-		if (siirrot.size() == 0)
+		if (siirrot.empty())
 		{
-			// Rekursion kantatapaus 1:
-			// peli on p‰‰ttynyt (ei yht‰‰n laillista siirtoa).
-			return MinimaxArvo(pisteyta_lopputulos(), Siirto());
+			// Lopputilanteessa k‰ytet‰‰n pisteyt‰_lopputulos()-funktiota,
+			// ja syvyys-parametri v‰litet‰‰n.
+			return MinimaxArvo(pisteyta_lopputulos(syvyys), Siirto());
 		}
 
 		if (syvyys == 0)
 		{
-			// Rekursion kantatapaus 2:
-			// ollaan katkaisusyvyydess‰.
 			return MinimaxArvo(evaluoi(), Siirto());
 		}
 
-		// Siirtoja on j‰ljell‰ ja ei olla katkaisusyvyydess‰,
-		// joten kokeillaan yksitellen mahdollisia siirtoja,
-		// ja kutsutaan minimax:a kullekin seuraaja-asemalle.
-		// Otetaan paras minimax-arvo talteen (alustetaan
-		// paras_arvo mahdollisimman huonoksi siirtovuoroisen
-		// pelaajan kannalta).
-		float paras_arvo = _siirtovuoro == VALKEA ?
-			numeric_limits<float>::min() : numeric_limits<float>::max();
-		Siirto paras_siirto;
+		// K‰ytet‰‰n vektorimuuttujaa parhaiden siirtojen ker‰‰miseen.
+		float paras_arvo = (_siirtovuoro == VALKEA) ?
+			numeric_limits<float>::lowest() : numeric_limits<float>::max();
+		vector<Siirto> parhaatSiirrot;
+		const float epsilon = 0.01f;  // Pieni toleranssi
+
 		for (Siirto& s : siirrot)
 		{
 			Asema uusi = *this;
 			uusi.tee_siirto(s, _siirtovuoro);
-
-			// Rekursioasekel: kutsutaan minimax:ia seuraaja-asemalle.
 			MinimaxArvo arvo = uusi.minimax(syvyys - 1);
 
-			// Jos saatiin paras arvo, otetaan se talteen.
-			if (_siirtovuoro == VALKEA && arvo._arvo > paras_arvo)
+			if (_siirtovuoro == VALKEA)
 			{
-				paras_arvo = arvo._arvo;
-				paras_siirto = s;
+				if (arvo._arvo > paras_arvo + epsilon)
+				{
+					paras_arvo = arvo._arvo;
+					parhaatSiirrot.clear();
+					parhaatSiirrot.push_back(s);
+				}
+				else if (fabs(arvo._arvo - paras_arvo) < epsilon)
+				{
+					parhaatSiirrot.push_back(s);
+				}
 			}
-			else if (_siirtovuoro == MUSTA && arvo._arvo < paras_arvo)
+			else  // MUSTA
 			{
-				paras_arvo = arvo._arvo;
-				paras_siirto = s;
+				if (arvo._arvo < paras_arvo - epsilon)
+				{
+					paras_arvo = arvo._arvo;
+					parhaatSiirrot.clear();
+					parhaatSiirrot.push_back(s);
+				}
+				else if (fabs(arvo._arvo - paras_arvo) < epsilon)
+				{
+					parhaatSiirrot.push_back(s);
+				}
 			}
 		}
 
-		// Palautetaan paras arvo.
-		return MinimaxArvo(paras_arvo, paras_siirto);
+		// Jos useita siirtoja on yht‰ hyvi‰, valitaan niiden joukosta satunnaisesti
+		int randomIndex = rand() % parhaatSiirrot.size();
+		return MinimaxArvo(paras_arvo, parhaatSiirrot[randomIndex]);
 	}
-
-
 
     //PSQT Taulukot
 	const int pawnPSQT[64] = {
@@ -176,7 +182,7 @@ public:
 		-5,   0,   0,   0,   0,   0,   0,  -5,
 		-5,   0,   0,   0,   0,   0,   0,  -5,
 		-5,   0,   0,   0,   0,   0,   0,  -5,
-		 0,   0,   0,   5,   5,   0,   0,   0
+		 0,   10,   0,   5,   5,   0,   0,   0
 	};
 
 	const int queenPSQT[64] = {
@@ -204,39 +210,37 @@ public:
 
 	// Palauttaa nappulalle ja ruudulle (rivi, linja) perustuvan PSQT-arvon.
 	int getPieceSquareValue(int nappula, int rivi, int linja) const {
-		int index = 0;
-		// Valkoisten nappuloiden PSQT indeksointi: k‰‰nnet‰‰n rivi
-		if (nappula == wP || nappula == wN || nappula == wB ||
-			nappula == wR || nappula == wQ || nappula == wK) {
-			index = (7 - rivi) * 8 + linja;
-		}
-		else { // mustat nappulat
-			index = rivi * 8 + linja;
+		int index = (7 - rivi) * 8 + linja; // Peilataan valkoisille
+
+		if (nappula == bP || nappula == bN || nappula == bB ||
+			nappula == bR || nappula == bQ || nappula == bK) {
+			index = rivi * 8 + linja; // Peilataan mustille
 		}
 
 		switch (nappula) {
 		case wP:
 		case bP:
-			return pawnPSQT[index];
+			return pawnPSQT[index] * (nappula == wP ? 1 : -1);
 		case wN:
 		case bN:
-			return knightPSQT[index];
+			return knightPSQT[index] * (nappula == wN ? 1 : -1);
 		case wB:
 		case bB:
-			return bishopPSQT[index];
+			return bishopPSQT[index] * (nappula == wB ? 1 : -1);
 		case wR:
 		case bR:
-			return rookPSQT[index];
+			return rookPSQT[index] * (nappula == wR ? 1 : -1);
 		case wQ:
 		case bQ:
-			return queenPSQT[index];
+			return queenPSQT[index] * (nappula == wQ ? 1 : -1);
 		case wK:
 		case bK:
-			return kingPSQT[index];
+			return kingPSQT[index] * (nappula == wK ? 1 : -1);
 		default:
 			return 0;
 		}
 	}
+
 	// Laskee materiaalin perusteella annetun tilan.
 	int nappulan_arvo(int nappula) const {
 		switch (nappula) {
