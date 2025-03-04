@@ -90,12 +90,6 @@ void Asema::etsi_kuningas(int nappula, int& rivi, int& linja) const
 
 void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
 {
-    if (onko_laillinen_siirto(siirto, pelaaja) == false)
-    {
-        std::cout << "Ei laillinen siirto!" << std::endl;
-        return; // Palataan eikä tehdä siirtoa
-    }
-
     // Siirto on laillinen, suoritetaan siirto
     int lahto_rivi = siirto._a_r;
     int lahto_linja = siirto._a_l;

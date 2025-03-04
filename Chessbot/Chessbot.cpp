@@ -111,9 +111,7 @@ void promotionDialog(sf::RenderWindow& window, Asema& asema, Siirto& move) {
 // SFML-käyttöliittymä, joka piirtää shakkilaudan ja käsittelee hiiritapahtumat
 void sfml_gui(Asema& asema) {
     sf::Font font;
-    if (!font.loadFromFile("C:/Users/savin/source/repos/Chessbot/font/AldotheApache.ttf")) {
-        cerr << "Virhe ladattaessa fonttia!" << endl;
-    }
+
     sf::Text text, text2;
     text.setFont(font);
     text2.setFont(font);
