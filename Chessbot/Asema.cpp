@@ -90,12 +90,6 @@ void Asema::etsi_kuningas(int nappula, int& rivi, int& linja) const
 
 void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
 {
-    if (onko_laillinen_siirto(siirto, pelaaja) == false)
-    {
-        std::cout << "Ei laillinen siirto!" << std::endl;
-        return; // Palataan eikä tehdä siirtoa
-    }
-
     // Siirto on laillinen, suoritetaan siirto
     int lahto_rivi = siirto._a_r;
     int lahto_linja = siirto._a_l;
@@ -785,7 +779,7 @@ float Asema::pisteyta_lopputulos() const
        
         int k_rivi, k_linja;
         etsi_kuningas(wK, k_rivi, k_linja);
-        if (onko_ruutu_uhattu(k_rivi, k_linja, VALKEA) == true)
+        if (onko_ruutu_uhattu(k_rivi, k_linja, MUSTA) == true)
         {
             return -1000000;
       
@@ -800,7 +794,7 @@ float Asema::pisteyta_lopputulos() const
         
         int k_rivi, k_linja;
         etsi_kuningas(bK, k_rivi, k_linja);
-        if (onko_ruutu_uhattu(k_rivi, k_linja, MUSTA) == true)
+        if (onko_ruutu_uhattu(k_rivi, k_linja, VALKEA) == true)
         {
             return 1000000;
            
