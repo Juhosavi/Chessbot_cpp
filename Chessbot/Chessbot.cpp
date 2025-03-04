@@ -236,7 +236,7 @@ void terminal_ui(Asema& asema) {
         std::cout << "Siirtoja: " << siirrot.size() << std::endl;
 
         std::string syote;
-        std::cout << "Anna siirto (esim. e2e4) tai 'undo' peruaaksesi: ";
+        std::cout << "Anna siirto tai 'undo' peruaaksesi: ";
         std::cin >> syote;
 
         if (syote == "undo") {
