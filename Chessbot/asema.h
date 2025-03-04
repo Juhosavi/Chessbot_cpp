@@ -105,7 +105,7 @@ public:
 		// paras_arvo mahdollisimman huonoksi siirtovuoroisen
 		// pelaajan kannalta).
 		float paras_arvo = _siirtovuoro == VALKEA ?
-			numeric_limits<float>::min() : numeric_limits<float>::max();
+			numeric_limits<float>::lowest() : numeric_limits<float>::max();
 		Siirto paras_siirto;
 		for (Siirto& s : siirrot)
 		{

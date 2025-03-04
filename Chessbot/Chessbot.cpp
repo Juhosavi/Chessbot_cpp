@@ -24,9 +24,9 @@ void lataaTekstuurit() {
     };
 
     std::vector<std::string> paths = {
-        "C:/Users/terok/Documents/GitHub/Shakki/pieces/",
+        //"C:/Users/terok/Documents/GitHub/Shakki/pieces/",
         "C:/GitHub/uusiChess/pieces/",
-        "C:/Users/savin/source/repos/Chessbot/pieces/"
+ /*       "C:/Users/savin/source/repos/Chessbot/pieces/"*/
     };
 
     for (const std::string& piece : pieces) {
@@ -220,6 +220,7 @@ void sfml_gui(Asema& asema) {
 // Tekstipohjainen käyttöliittymä komentorivillä
 void terminal_ui(Asema& asema) {
     vector<Siirto> siirrot;
+    siirrot.reserve(100);
     while (true) {
         asema.tulosta();
         siirrot.clear();
