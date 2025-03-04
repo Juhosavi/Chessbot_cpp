@@ -224,7 +224,7 @@ void terminal_ui(Asema& asema) {
         asema.tulosta();
         siirrot.clear();
         asema.anna_siirrot(siirrot);
-        MinimaxArvo minimaxTulos = asema.minimax(4);
+        MinimaxArvo minimaxTulos = asema.minimax(2);
         std::cout << "Minimax Arvo: " << minimaxTulos._arvo << std::endl;
         std::cout << "Paras siirto: "
             << "Lahto: "
@@ -259,16 +259,6 @@ void terminal_ui(Asema& asema) {
 
 int main() {
     Asema asema;
-    //Linnoitus asetelma
-    //asema.tyhjenna();
-
-    //asema._lauta[7][4] = wK;
-    //asema._lauta[7][7] = wR;
-    //asema._lauta[7][0] = wR;
-    //asema._lauta[0][4] = bK;
-    //asema._lauta[0][0] = bR;
-    //asema._lauta[0][7] = bR;
-    //asema._lauta[6][0] = wP;
     // Luodaan säikeet graafiselle ja tekstipohjaiselle käyttöliittymälle
     thread t1(sfml_gui, ref(asema));
     thread t2(terminal_ui, ref(asema));
