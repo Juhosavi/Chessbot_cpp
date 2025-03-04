@@ -17,20 +17,38 @@ map<string, sf::Texture> textures;
 
 // Lataa kaikki shakkipelin nappulat
 void lataaTekstuurit() {
-    vector<string> pieces = {
+    std::vector<std::string> pieces = {
         "black-bishop", "black-king", "black-knight", "black-pawn",
         "black-queen", "black-rook", "white-bishop", "white-king",
         "white-knight", "white-pawn", "white-queen", "white-rook"
     };
 
-    for (const string& piece : pieces) {
+    std::vector<std::string> paths = {
+        "C:/Users/terok/Documents/GitHub/Shakki/pieces/",
+        "C:/GitHub/uusiChess/pieces/",
+        "C:/Users/savin/source/repos/Chessbot/pieces/"
+    };
+
+    for (const std::string& piece : pieces) {
         sf::Texture texture;
-        if (!texture.loadFromFile("C:/GitHub/uusiChess/pieces/" + piece + ".png")) {
-            cerr << "Virhe ladattaessa tekstuuria: " << piece << endl;
+        bool loaded = false;
+
+        for (const std::string& path : paths) {
+            if (texture.loadFromFile(path + piece + ".png")) {
+                loaded = true;
+                break;
+            }
         }
-        textures[piece] = texture;
+
+        if (!loaded) {
+            std::cerr << "Virhe ladattaessa tekstuuria: " << piece << std::endl;
+        }
+        else {
+            textures[piece] = texture;
+        }
     }
 }
+
 
 // Näytä ylennysvalinta SFML-ikkunassa ja anna käyttäjän valinta
 // Tämä funktio odottaa, että käyttäjä klikkaa jonkin valinnan alueen.
@@ -93,7 +111,7 @@ void promotionDialog(sf::RenderWindow& window, Asema& asema, Siirto& move) {
 // SFML-käyttöliittymä, joka piirtää shakkilaudan ja käsittelee hiiritapahtumat
 void sfml_gui(Asema& asema) {
     sf::Font font;
-    if (!font.loadFromFile("C:/GitHub/uusiChess/font/AldotheApache.ttf")) {
+    if (!font.loadFromFile("C:/Users/savin/source/repos/Chessbot/font/AldotheApache.ttf")) {
         cerr << "Virhe ladattaessa fonttia!" << endl;
     }
     sf::Text text, text2;
@@ -206,7 +224,7 @@ void terminal_ui(Asema& asema) {
         asema.tulosta();
         siirrot.clear();
         asema.anna_siirrot(siirrot);
-        MinimaxArvo minimaxTulos = asema.minimax(3);
+        MinimaxArvo minimaxTulos = asema.minimax(2);
         std::cout << "Minimax Arvo: " << minimaxTulos._arvo << std::endl;
         std::cout << "Paras siirto: "
             << "Lahto: "
@@ -241,30 +259,7 @@ void terminal_ui(Asema& asema) {
 
 int main() {
     Asema asema;
-    //Linnoitus asetelma
-    asema.tyhjenna();
-
-    asema._lauta[7][4] = wK;
-    asema._lauta[7][7] = wR;
-    asema._lauta[7][0] = wR;
-    asema._lauta[0][4] = bK;
-    asema._lauta[0][0] = bR;
-    asema._lauta[0][7] = bR;
-    asema._lauta[6][0] = wP;
     // Luodaan säikeet graafiselle ja tekstipohjaiselle käyttöliittymälle
-
-    //Linnoitus asetelma
-    asema.tyhjenna();
-
-    asema._lauta[7][4] = wK;
-    asema._lauta[7][7] = wR;
-    asema._lauta[7][0] = wR;
-    asema._lauta[0][4] = bK;
-    asema._lauta[0][0] = bR;
-    asema._lauta[0][7] = bR;
-    asema._lauta[6][0] = wP;
-
-
     thread t1(sfml_gui, ref(asema));
     thread t2(terminal_ui, ref(asema));
     t1.join();

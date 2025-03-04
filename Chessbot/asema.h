@@ -77,6 +77,7 @@ public:
 	void tyhjenna();
 
 //------------------------UUSI KOODI------------------------
+
 	MinimaxArvo minimax(int syvyys)
 	{
 		// Generoidaan aseman siirrot.
@@ -133,31 +134,128 @@ public:
 
 
 
-	// Laskee materiaalitasapainon (valkean nappuloiden arvo - mustan nappuloiden arvo).
-	// Nappuloiden arvot:
-	//
-	// sotilas		1
-	// ratsu		3
-	// l‰hetti		3
-	// torni		5
-	// daami		9
-	//
-	int nappulan_arvo(int nappula) const { 
+    //PSQT Taulukot
+	const int pawnPSQT[64] = {
+		  0,   0,   0,   0,   0,   0,   0,   0,
+		 50,  50,  50,  50,  50,  50,  50,  50,
+		 10,  10,  20,  30,  30,  20,  10,  10,
+		  5,   5,  10,  25,  25,  10,   5,   5,
+		  0,   0,   0,  20,  20,   0,   0,   0,
+		  5,  -5, -10,   0,   0, -10,  -5,   5,
+		  5,  10,  10, -20, -20,  10,  10,   5,
+		  0,   0,   0,   0,   0,   0,   0,   0
+	};
+
+	const int knightPSQT[64] = {
+		-50, -40, -30, -30, -30, -30, -40, -50,
+		-40, -20,   0,   0,   0,   0, -20, -40,
+		-30,   0,  10,  15,  15,  10,   0, -30,
+		-30,   5,  15,  20,  20,  15,   5, -30,
+		-30,   0,  15,  20,  20,  15,   0, -30,
+		-30,   5,  10,  15,  15,  10,   5, -30,
+		-40, -20,   0,   5,   5,   0, -20, -40,
+		-50, -40, -30, -30, -30, -30, -40, -50
+	};
+
+	const int bishopPSQT[64] = {
+		-20, -10, -10, -10, -10, -10, -10, -20,
+		-10,   0,   0,   0,   0,   0,   0, -10,
+		-10,   0,   5,  10,  10,   5,   0, -10,
+		-10,   5,   5,  10,  10,   5,   5, -10,
+		-10,   0,  10,  10,  10,  10,   0, -10,
+		-10,  10,  10,  10,  10,  10,  10, -10,
+		-10,   5,   0,   0,   0,   0,   5, -10,
+		-20, -10, -10, -10, -10, -10, -10, -20
+	};
+
+	const int rookPSQT[64] = {
+		 0,   0,   0,   0,   0,   0,   0,   0,
+		 5,  10,  10,  10,  10,  10,  10,   5,
+		-5,   0,   0,   0,   0,   0,   0,  -5,
+		-5,   0,   0,   0,   0,   0,   0,  -5,
+		-5,   0,   0,   0,   0,   0,   0,  -5,
+		-5,   0,   0,   0,   0,   0,   0,  -5,
+		-5,   0,   0,   0,   0,   0,   0,  -5,
+		 0,   0,   0,   5,   5,   0,   0,   0
+	};
+
+	const int queenPSQT[64] = {
+		-20, -10, -10,  -5,  -5, -10, -10, -20,
+		-10,   0,   0,   0,   0,   0,   0, -10,
+		-10,   0,   5,   5,   5,   5,   0, -10,
+		 -5,   0,   5,   5,   5,   5,   0,  -5,
+		  0,   0,   5,   5,   5,   5,   0,  -5,
+		-10,   5,   5,   5,   5,   5,   0, -10,
+		-10,   0,   5,   0,   0,   0,   0, -10,
+		-20, -10, -10,  -5,  -5, -10, -10, -20
+	};
+
+	// Kuningas
+	const int kingPSQT[64] = {
+		-30, -40, -40, -50, -50, -40, -40, -30,
+		-30, -40, -40, -50, -50, -40, -40, -30,
+		-30, -40, -40, -50, -50, -40, -40, -30,
+		-30, -40, -40, -50, -50, -40, -40, -30,
+		-20, -30, -30, -40, -40, -30, -30, -20,
+		-10, -20, -20, -20, -20, -20, -20, -10,
+		 20,  20,   0,   0,   0,   0,  20,  20,
+		 20,  30,  10,   0,   0,  10,  30,  20
+	};
+
+	// Palauttaa nappulalle ja ruudulle (rivi, linja) perustuvan PSQT-arvon.
+	int getPieceSquareValue(int nappula, int rivi, int linja) const {
+		int index = 0;
+		// Valkoisten nappuloiden PSQT indeksointi: k‰‰nnet‰‰n rivi
+		if (nappula == wP || nappula == wN || nappula == wB ||
+			nappula == wR || nappula == wQ || nappula == wK) {
+			index = (7 - rivi) * 8 + linja;
+		}
+		else { // mustat nappulat
+			index = rivi * 8 + linja;
+		}
+
 		switch (nappula) {
-		case wP: return 1;
-		case wN: return 3;
-		case wB: return 3;
-		case wR: return 5;
-		case wQ: return 9;
-		case wK: return 100;
-		case bP: return -1;
-		case bN: return -3;
-		case bB: return -3;
-		case bR: return -5;
-		case bQ: return -9;
-		case bK: return -100;
+		case wP:
+		case bP:
+			return pawnPSQT[index];
+		case wN:
+		case bN:
+			return knightPSQT[index];
+		case wB:
+		case bB:
+			return bishopPSQT[index];
+		case wR:
+		case bR:
+			return rookPSQT[index];
+		case wQ:
+		case bQ:
+			return queenPSQT[index];
+		case wK:
+		case bK:
+			return kingPSQT[index];
+		default:
+			return 0;
 		}
 	}
+	// Laskee materiaalin perusteella annetun tilan.
+	int nappulan_arvo(int nappula) const {
+		switch (nappula) {
+		case wP: return 100;
+		case wN: return 320;
+		case wB: return 330;
+		case wR: return 500;
+		case wQ: return 900;
+		case wK: return 20000;
+		case bP: return -100;
+		case bN: return -320;
+		case bB: return -330;
+		case bR: return -500;
+		case bQ: return -900;
+		case bK: return -20000;
+		default: return 0;
+		}
+	}
+
 
 
 	float materiaali() const {
@@ -191,7 +289,20 @@ public:
 
 	
 	float evaluoi() const {
-		return 1.0f * materiaali() + 0.1f * mobiliteetti();
+		float score = 0.0f;
+		for (int rivi = 0; rivi < 8; ++rivi) {
+			for (int linja = 0; linja < 8; ++linja) {
+				int nappula = _lauta[rivi][linja];
+				if (nappula != NA) {
+					int material = nappulan_arvo(nappula);
+					int positional = getPieceSquareValue(nappula, rivi, linja);
+					score += (material + positional);
+				}
+			}
+		}
+		// Halutessasi voit lis‰t‰ myˆs mobiliteetin vaikutuksen:
+		// score += mobiliteetti();
+		return score;
 	}
 
 };
