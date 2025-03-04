@@ -90,6 +90,8 @@ void Asema::etsi_kuningas(int nappula, int& rivi, int& linja) const
 
 void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
 {
+    _asemaHistoria.push_back(*this);
+
     // Siirto on laillinen, suoritetaan siirto
     int lahto_rivi = siirto._a_r;
     int lahto_linja = siirto._a_l;
@@ -174,6 +176,8 @@ void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
 
     // Vaihdetaan vuoroa
     _siirtovuoro = (_siirtovuoro == VALKEA) ? MUSTA : VALKEA;
+
+    _siirtohistoria.push_back(siirto);
 }
 
 void Asema::kysy_siirto(int pelaaja, int& lahto_rivi, int& lahto_linja, int& kohde_rivi, int& kohde_linja)
@@ -808,3 +812,20 @@ float Asema::pisteyta_lopputulos() const
 
     }
  }
+
+bool Asema::undo() 
+{
+    if (_siirtohistoria.empty() || _asemaHistoria.size() <= 1) {
+        // Ei ole siirtoja, joita perua
+        return false;
+    }
+
+    // Poistetaan viimeisin siirto siirtohistoriasta
+    _siirtohistoria.pop_back();
+
+    // Palautetaan toiseksi viimeisin asema asetahistoriasta
+    _asemaHistoria.pop_back();
+    *this = _asemaHistoria.back();
+
+    return true;
+}

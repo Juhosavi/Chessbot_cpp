@@ -24,8 +24,8 @@ void lataaTekstuurit() {
     };
 
     std::vector<std::string> paths = {
-        //"C:/Users/terok/Documents/GitHub/Shakki/pieces/",
-        "C:/GitHub/uusiChess/pieces/",
+        "C:/Users/terok/Documents/GitHub/Shakki/pieces/",
+        /*"C:/GitHub/uusiChess/pieces/",*/
  /*       "C:/Users/savin/source/repos/Chessbot/pieces/"*/
     };
 
@@ -217,7 +217,7 @@ void sfml_gui(Asema& asema) {
 
 // Tekstipohjainen käyttöliittymä komentorivillä
 void terminal_ui(Asema& asema) {
-    vector<Siirto> siirrot;
+    std::vector<Siirto> siirrot;
     siirrot.reserve(100);
     while (true) {
         asema.tulosta();
@@ -233,26 +233,38 @@ void terminal_ui(Asema& asema) {
             << static_cast<char>('a' + minimaxTulos._siirto._l_l)
             << static_cast<char>('1' + (7 - minimaxTulos._siirto._l_r))
             << std::endl;
-        cout << "Siirtoja: " << siirrot.size() << endl;
-        int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
-        Siirto kayttajan_siirto;
-        while (true) {
-            asema.kysy_siirto(asema._siirtovuoro, lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
-            kayttajan_siirto = Siirto(lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
-            bool laillinen_siirto = false;
-            for (const auto& s : siirrot) {
-                if (s == kayttajan_siirto) {
-                    laillinen_siirto = true;
-                    break;
-                }
+        std::cout << "Siirtoja: " << siirrot.size() << std::endl;
+
+        std::string syote;
+        std::cout << "Anna siirto (esim. e2e4) tai 'undo' peruaaksesi: ";
+        std::cin >> syote;
+
+        if (syote == "undo") {
+            if (asema._siirtohistoria.empty()) { // Tarkistetaan, onko siirtoja
+                std::cout << "Ei siirtoja peruttavaksi." << std::endl;
             }
-            if (laillinen_siirto)
-                break;
-            else
-                cout << "Ei laillinen siirto! Yritä uudelleen." << endl;
+            else if (asema.undo()) {
+                std::cout << "Siirto peruttu." << std::endl;
+            }
+            continue; // Palaa silmukan alkuun
         }
-        asema.tee_siirto(kayttajan_siirto, asema._siirtovuoro);
-        asema.anna_siirrot(siirrot);
+
+        int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
+        Siirto kayttajan_siirto(syote); // Käytetään Siirto-luokan konstruktoria merkkijonosta
+
+        bool laillinen_siirto = false;
+        for (const auto& s : siirrot) {
+            if (s == kayttajan_siirto) {
+                laillinen_siirto = true;
+                break;
+            }
+        }
+        if (laillinen_siirto) {
+            asema.tee_siirto(kayttajan_siirto, asema._siirtovuoro);
+        }
+        else {
+            std::cout << "Ei laillinen siirto! Yritä uudelleen." << std::endl;
+        }
     }
 }
 

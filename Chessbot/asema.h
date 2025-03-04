@@ -75,7 +75,7 @@ public:
 	bool onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const;
 	float pisteyta_lopputulos() const;
 	void tyhjenna();
-
+	bool undo();
 //------------------------UUSI KOODI------------------------
 
 	MinimaxArvo minimax(int syvyys)
@@ -305,4 +305,35 @@ public:
 		return score;
 	}
 
+	//Tämä liittyy undo-ominaisuuteen
+	std::vector<Siirto> _siirtohistoria; // Tallentaa tehdyt siirrot
+	std::vector<Asema> _asemaHistoria; // Tallentaa asemien tilat
+	Asema& operator=(const Asema& toinen) 
+	{
+		if (this == &toinen) 
+		{
+			return *this; 
+		}
+
+		// Kopioidaan lauta
+		for (int rivi = 0; rivi < 8; ++rivi) 
+		{
+			for (int linja = 0; linja < 8; ++linja) 
+			{
+				_lauta[rivi][linja] = toinen._lauta[rivi][linja];
+			}
+		}
+
+		// Kopioidaan muut jäsenmuuttujat
+		_siirtovuoro = toinen._siirtovuoro;
+		_valkea_lyhyt_linna_sallittu = toinen._valkea_lyhyt_linna_sallittu;
+		_valkea_pitka_linna_sallittu = toinen._valkea_pitka_linna_sallittu;
+		_musta_lyhyt_linna_sallittu = toinen._musta_lyhyt_linna_sallittu;
+		_musta_pitka_linna_sallittu = toinen._musta_pitka_linna_sallittu;
+		_kaksoisaskel_linjalla = toinen._kaksoisaskel_linjalla;
+		_siirtohistoria = toinen._siirtohistoria;
+		_asemaHistoria = toinen._asemaHistoria;
+
+		return *this;
+	}
 };
