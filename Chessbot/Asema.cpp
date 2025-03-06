@@ -221,6 +221,7 @@ bool Asema::on_vastustajan_nappula(int ruutu, int pelaaja) const
 bool Asema::onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const
 {
     std::vector<Siirto> sallitut_siirrot;
+    sallitut_siirrot.reserve(100);
 
     int rivi = siirto._a_r;
     int linja = siirto._a_l;
@@ -737,6 +738,7 @@ void Asema::anna_kaikki_raakasiirrot(int pelaaja, std::vector<Siirto>& siirrot) 
 bool Asema::onko_ruutu_uhattu(int rivi, int linja, int uhkaava_pelaaja) const
 {
     std::vector<Siirto> raakasiirrot;
+    raakasiirrot.reserve(100);
     anna_kaikki_raakasiirrot(uhkaava_pelaaja, raakasiirrot);
 
     for (const auto& rs : raakasiirrot)
@@ -752,6 +754,7 @@ bool Asema::onko_ruutu_uhattu(int rivi, int linja, int uhkaava_pelaaja) const
 void Asema::anna_siirrot(std::vector<Siirto>& siirrot) const
 {
     std::vector<Siirto> raakasiirrot;
+    raakasiirrot.reserve(100);
 
 
     // generoidaan raakasiirrot, ja testataan ne yksi kerrallaan. 

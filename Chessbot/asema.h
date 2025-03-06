@@ -78,15 +78,16 @@ public:
 
 //------------------------UUSI KOODI------------------------
 
-	MinimaxArvo minimax(int syvyys)
+
+	///ALPHA BETA KOKEILU, myˆs mainissa uusi rimpsu
+	MinimaxArvo minimax(int syvyys, float alpha, float beta)
 	{
 		vector<Siirto> siirrot;
+		siirrot.reserve(100);
 		anna_siirrot(siirrot);
 
 		if (siirrot.empty())
 		{
-			// Lopputilanteessa k‰ytet‰‰n pisteyt‰_lopputulos()-funktiota,
-			// ja syvyys-parametri v‰litet‰‰n.
 			return MinimaxArvo(pisteyta_lopputulos(syvyys), Siirto());
 		}
 
@@ -95,50 +96,44 @@ public:
 			return MinimaxArvo(evaluoi(), Siirto());
 		}
 
-		// K‰ytet‰‰n vektorimuuttujaa parhaiden siirtojen ker‰‰miseen.
-		float paras_arvo = (_siirtovuoro == VALKEA) ?
-			numeric_limits<float>::lowest() : numeric_limits<float>::max();
-		vector<Siirto> parhaatSiirrot;
-		const float epsilon = 0.01f;  // Pieni toleranssi
+		float paras_arvo = (_siirtovuoro == VALKEA) ? numeric_limits<float>::lowest() : numeric_limits<float>::max();
+		Siirto paras_siirto;
 
 		for (Siirto& s : siirrot)
 		{
 			Asema uusi = *this;
 			uusi.tee_siirto(s, _siirtovuoro);
-			MinimaxArvo arvo = uusi.minimax(syvyys - 1);
+			MinimaxArvo arvo = uusi.minimax(syvyys - 1, alpha, beta);
 
 			if (_siirtovuoro == VALKEA)
 			{
-				if (arvo._arvo > paras_arvo + epsilon)
+				if (arvo._arvo > paras_arvo)
 				{
 					paras_arvo = arvo._arvo;
-					parhaatSiirrot.clear();
-					parhaatSiirrot.push_back(s);
+					paras_siirto = s;
 				}
-				else if (fabs(arvo._arvo - paras_arvo) < epsilon)
-				{
-					parhaatSiirrot.push_back(s);
-				}
+				alpha = max(alpha, paras_arvo);
 			}
 			else  // MUSTA
 			{
-				if (arvo._arvo < paras_arvo - epsilon)
+				if (arvo._arvo < paras_arvo)
 				{
 					paras_arvo = arvo._arvo;
-					parhaatSiirrot.clear();
-					parhaatSiirrot.push_back(s);
+					paras_siirto = s;
 				}
-				else if (fabs(arvo._arvo - paras_arvo) < epsilon)
-				{
-					parhaatSiirrot.push_back(s);
-				}
+				beta = min(beta, paras_arvo);
+			}
+
+			// Alpha-beta-leikkaus
+			if (beta <= alpha)
+			{
+				break;
 			}
 		}
 
-		// Jos useita siirtoja on yht‰ hyvi‰, valitaan niiden joukosta satunnaisesti
-		int randomIndex = rand() % parhaatSiirrot.size();
-		return MinimaxArvo(paras_arvo, parhaatSiirrot[randomIndex]);
+		return MinimaxArvo(paras_arvo, paras_siirto);
 	}
+
 
     //PSQT Taulukot
 	const int pawnPSQT[64] = {
