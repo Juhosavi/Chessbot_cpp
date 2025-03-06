@@ -133,6 +133,7 @@ void sfml_gui(Asema& asema) {
     };
 
     vector<Siirto> mahdollisetSiirrot;
+    mahdollisetSiirrot.reserve(100);
     int valittuRivi = -1, valittuLinja = -1;
     bool siirtoValittu = false;
     Siirto valittuSiirto;
@@ -220,11 +221,13 @@ void sfml_gui(Asema& asema) {
 // Tekstipohjainen käyttöliittymä komentorivillä
 void terminal_ui(Asema& asema) {
     vector<Siirto> siirrot;
+    siirrot.reserve(100);
     while (true) {
         asema.tulosta();
         siirrot.clear();
         asema.anna_siirrot(siirrot);
-        MinimaxArvo minimaxTulos = asema.minimax(2);
+        MinimaxArvo minimaxTulos = asema.minimax(4, numeric_limits<float>::lowest(), numeric_limits<float>::max());
+
         std::cout << "Minimax Arvo: " << minimaxTulos._arvo << std::endl;
         std::cout << "Paras siirto: "
             << "Lahto: "

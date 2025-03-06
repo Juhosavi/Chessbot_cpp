@@ -90,11 +90,12 @@ void Asema::etsi_kuningas(int nappula, int& rivi, int& linja) const
 
 void Asema::tee_siirto(const Siirto& siirto, int pelaaja)
 {
-    if (onko_laillinen_siirto(siirto, pelaaja) == false)
-    {
-        std::cout << "Ei laillinen siirto!" << std::endl;
-        return; // Palataan eikä tehdä siirtoa
-    }
+   
+    //if (onko_laillinen_siirto(siirto, pelaaja) == false)
+    //{
+    //    std::cout << "Ei laillinen siirto!" << std::endl;
+    //    return; // Palataan eikä tehdä siirtoa
+    //}
 
     // Siirto on laillinen, suoritetaan siirto
     int lahto_rivi = siirto._a_r;
@@ -220,6 +221,7 @@ bool Asema::on_vastustajan_nappula(int ruutu, int pelaaja) const
 bool Asema::onko_laillinen_siirto(const Siirto& siirto, int pelaaja) const
 {
     std::vector<Siirto> sallitut_siirrot;
+    sallitut_siirrot.reserve(100);
 
     int rivi = siirto._a_r;
     int linja = siirto._a_l;
@@ -736,6 +738,7 @@ void Asema::anna_kaikki_raakasiirrot(int pelaaja, std::vector<Siirto>& siirrot) 
 bool Asema::onko_ruutu_uhattu(int rivi, int linja, int uhkaava_pelaaja) const
 {
     std::vector<Siirto> raakasiirrot;
+    raakasiirrot.reserve(100);
     anna_kaikki_raakasiirrot(uhkaava_pelaaja, raakasiirrot);
 
     for (const auto& rs : raakasiirrot)
@@ -751,6 +754,7 @@ bool Asema::onko_ruutu_uhattu(int rivi, int linja, int uhkaava_pelaaja) const
 void Asema::anna_siirrot(std::vector<Siirto>& siirrot) const
 {
     std::vector<Siirto> raakasiirrot;
+    raakasiirrot.reserve(100);
 
 
     // generoidaan raakasiirrot, ja testataan ne yksi kerrallaan. 
@@ -774,43 +778,22 @@ void Asema::anna_siirrot(std::vector<Siirto>& siirrot) const
     }
 }
 
-float Asema::pisteyta_lopputulos() const
+float Asema::pisteyta_lopputulos(int syvyys) const
 {
-    
-    // 1. etsi siirtovuoroisen pelaajan kuningas
-   // 2. tarkistakaa, onko kuninkaan ruutu uhattu (onko_ruutu_uhattu)
-    //      2.1 jos ruutu on uhattu, niin palauttakaa 1000000 tai -1000000
-    //      2.2 jos ruutu ei ole uhattu, niin palauttakaa 0
+    int k_rivi, k_linja;
     if (_siirtovuoro == VALKEA) {
-       
-        int k_rivi, k_linja;
         etsi_kuningas(wK, k_rivi, k_linja);
-        if (onko_ruutu_uhattu(k_rivi, k_linja, MUSTA) == true)
-        {
-            return -1000000;
-      
-        }
+        if (onko_ruutu_uhattu(k_rivi, k_linja, MUSTA))
+            return -1000000 - syvyys; 
         else
-        {
             return 0;
-          
-        }
     }
     else {
-        
-        int k_rivi, k_linja;
         etsi_kuningas(bK, k_rivi, k_linja);
-        if (onko_ruutu_uhattu(k_rivi, k_linja, VALKEA) == true)
-        {
-            return 1000000;
-           
-        }
+        if (onko_ruutu_uhattu(k_rivi, k_linja, VALKEA))
+            return 1000000 + syvyys;
         else
-        {
             return 0;
-           
-        }
-    
-
     }
- }
+}
+
