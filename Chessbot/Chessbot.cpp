@@ -23,10 +23,9 @@ void lataaTekstuurit() {
         "white-knight", "white-pawn", "white-queen", "white-rook"
     };
 
-    std::vector<std::string> paths = {
-        "C:/Users/terok/Documents/GitHub/Shakki/pieces/",
-        "C:/GitHub/uusiChess/pieces/",
-        "C:/Users/savin/source/repos/Chessbot/pieces/"
+    std::vector<std::string> paths = 
+    {
+        "/pieces/"
     };
 
     for (const std::string& piece : pieces) {
@@ -111,7 +110,7 @@ void promotionDialog(sf::RenderWindow& window, Asema& asema, Siirto& move) {
 // SFML-käyttöliittymä, joka piirtää shakkilaudan ja käsittelee hiiritapahtumat
 void sfml_gui(Asema& asema) {
     sf::Font font;
-    if (!font.loadFromFile("C:/Users/savin/source/repos/Chessbot/font/AldotheApache.ttf")) {
+    if (!font.loadFromFile("/font/AldotheApache.ttf")) {
         cerr << "Virhe ladattaessa fonttia!" << endl;
     }
     sf::Text text, text2;
