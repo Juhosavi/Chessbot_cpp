@@ -6,19 +6,38 @@
 #include <limits>
 #include <vector>
 #include <map>
+#include <execution>
+#include <algorithm>
 
 using namespace std;
 
 class MinimaxArvo
+
 {
+
 public:
+
 	MinimaxArvo(float arvo, Siirto siirto) :
+
 		_arvo(arvo), _siirto(siirto)
+
 	{}
 
-	float	_arvo;
-	Siirto	_siirto;
+
+
+	MinimaxArvo() : _arvo(0), _siirto()
+
+	{ }
+
+
+
+	float       _arvo;
+
+	Siirto      _siirto;
+
 };
+
+
 
 
 class Asema
@@ -76,64 +95,85 @@ public:
 	float pisteyta_lopputulos(int syvyys) const;
 	void tyhjenna();
 
+
 //------------------------UUSI KOODI------------------------
 
 
 	///ALPHA BETA KOKEILU, myös mainissa uusi rimpsu
-	MinimaxArvo minimax(int syvyys, float alpha, float beta)
+	MinimaxArvo minimax(int syvyys, bool rinnakkainen = false)
 	{
+		// Generoidaan aseman lailliset siirrot.
 		vector<Siirto> siirrot;
-		siirrot.reserve(100);
 		anna_siirrot(siirrot);
 
 		if (siirrot.empty())
 		{
+			// Ei laillisia siirtoja: peli on päättynyt.
 			return MinimaxArvo(pisteyta_lopputulos(syvyys), Siirto());
 		}
 
 		if (syvyys == 0)
 		{
+			// Katkaisusyvyys: arvioidaan asema.
 			return MinimaxArvo(evaluoi(), Siirto());
 		}
 
-		float paras_arvo = (_siirtovuoro == VALKEA) ? numeric_limits<float>::lowest() : numeric_limits<float>::max();
+		// Alustetaan vektori, johon tallennetaan laskettujen siirtojen arvot.
+		vector<MinimaxArvo> arvot(siirrot.size());
+
+		// Käytetään rinnakkaista tai sekventiaalista std::transformia.
+		if (rinnakkainen)
+		{
+			std::transform(std::execution::par,
+				siirrot.begin(),
+				siirrot.end(),
+				arvot.begin(),
+				[this, &syvyys](const Siirto& s) -> MinimaxArvo {
+					Asema uusi = *this;
+					uusi.tee_siirto(s, this->_siirtovuoro);
+					return uusi.minimax(syvyys - 1, false);
+				});
+		}
+		else
+		{
+			std::transform(std::execution::seq,
+				siirrot.begin(),
+				siirrot.end(),
+				arvot.begin(),
+				[this, &syvyys](const Siirto& s) -> MinimaxArvo {
+					Asema uusi = *this;
+					uusi.tee_siirto(s, this->_siirtovuoro);
+					return uusi.minimax(syvyys - 1, false);
+				});
+		}
+
+		// Valitaan paras arvo ja siihen liittyvä siirto
+		float paras_arvo = (_siirtovuoro == VALKEA) ?
+			std::numeric_limits<float>::lowest() : std::numeric_limits<float>::max();
 		Siirto paras_siirto;
 
-		for (Siirto& s : siirrot)
+		for (size_t i = 0; i < siirrot.size(); ++i)
 		{
-			Asema uusi = *this;
-			uusi.tee_siirto(s, _siirtovuoro);
-			MinimaxArvo arvo = uusi.minimax(syvyys - 1, alpha, beta);
-
 			if (_siirtovuoro == VALKEA)
 			{
-				if (arvo._arvo > paras_arvo)
+				if (arvot[i]._arvo > paras_arvo)
 				{
-					paras_arvo = arvo._arvo;
-					paras_siirto = s;
+					paras_arvo = arvot[i]._arvo;
+					paras_siirto = siirrot[i];
 				}
-				alpha = max(alpha, paras_arvo);
 			}
 			else  // MUSTA
 			{
-				if (arvo._arvo < paras_arvo)
+				if (arvot[i]._arvo < paras_arvo)
 				{
-					paras_arvo = arvo._arvo;
-					paras_siirto = s;
+					paras_arvo = arvot[i]._arvo;
+					paras_siirto = siirrot[i];
 				}
-				beta = min(beta, paras_arvo);
-			}
-
-			// Alpha-beta-leikkaus
-			if (beta <= alpha)
-			{
-				break;
 			}
 		}
 
 		return MinimaxArvo(paras_arvo, paras_siirto);
 	}
-
 
     //PSQT Taulukot
 	const int pawnPSQT[64] = {

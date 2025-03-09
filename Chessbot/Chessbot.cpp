@@ -6,6 +6,7 @@
 #include "asema.h"
 #include "siirto.h"
 #include "shakki.h"
+#include <execution>
 
 using namespace std;
 
@@ -208,7 +209,7 @@ void terminal_ui(Asema& asema) {
         asema.tulosta();
         siirrot.clear();
         asema.anna_siirrot(siirrot);
-        MinimaxArvo minimaxTulos = asema.minimax(4, numeric_limits<float>::lowest(), numeric_limits<float>::max());
+        MinimaxArvo minimaxTulos = asema.minimax(4, true);
 
         std::cout << "Minimax Arvo: " << minimaxTulos._arvo << std::endl;
         std::cout << "Paras siirto: "
