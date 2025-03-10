@@ -140,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asema.h" />
+    <ClInclude Include="kayttis.h" />
     <ClInclude Include="shakki.h" />
     <ClInclude Include="siirto.h" />
   </ItemGroup>
