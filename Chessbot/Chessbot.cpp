@@ -1,3 +1,8 @@
+/**
+ * @file main.cpp
+ * @brief Pääohjelma shakki-sovellukselle.
+ */
+
 #include <iostream>
 #include <vector>
 #include <thread>
@@ -9,13 +14,24 @@
 #include <execution>
 #include "kayttis.h"
 
-
+ /**
+  * @brief Pääohjelma, joka käynnistää shakkisovelluksen.
+  *
+  * Luo kaksi erillistä säiettä graafiselle ja tekstipohjaiselle käyttöliittymälle.
+  * Molemmat säikeet käyttävät yhteistä Asema-oliota.
+  *
+  * @return Palauttaa 0 ohjelman suorituksen päätyttyä.
+  */
 int main() {
-    Asema asema;
-    // Luodaan säikeet graafiselle ja tekstipohjaiselle käyttöliittymälle
-    thread t1(sfml_gui, ref(asema));
-    thread t2(terminal_ui, ref(asema));
+    Asema asema;  ///< Pelitilannetta kuvaava olio.
+
+    /// Luodaan säikeet graafiselle ja tekstipohjaiselle käyttöliittymälle.
+    std::thread t1(sfml_gui, std::ref(asema));
+    std::thread t2(terminal_ui, std::ref(asema));
+
+    /// Odotetaan, että molemmat säikeet päättyvät ennen ohjelman sulkemista.
     t1.join();
     t2.join();
+
     return 0;
 }
