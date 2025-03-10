@@ -14,10 +14,18 @@ using namespace std;
 // Shakkilaudan ruudun koko
 const int tileSize = 100;
 
-// Tekstuurit kaikille nappuloille
+/**
+ * @brief Tekstuurit kaikille nappuloille
+ *
+ * Tämä kartta tallentaa tekstuurit kaikille shakkipelin nappuloille.
+ */
 map<string, sf::Texture> textures;
 
-// Lataa kaikki shakkipelin nappulat
+/**
+ * @brief Lataa kaikki shakkipelin nappulat
+ *
+ * Tämä funktio lataa kaikki shakkipelin nappuloiden kuvatiedostot.
+ */
 void lataaTekstuurit() {
     vector<string> pieces = {
         "black-bishop", "black-king", "black-knight", "black-pawn",
@@ -34,8 +42,16 @@ void lataaTekstuurit() {
     }
 }
 
-// Näytä ylennysvalinta SFML-ikkunassa ja anna käyttäjän valinta
-// Tämä funktio odottaa, että käyttäjä klikkaa jonkin valinnan alueen.
+/**
+ * @brief Näyttää ylennysvalinta SFML-ikkunassa ja antaa käyttäjän valinnan
+ *
+ * Funktio odottaa, että käyttäjä klikkaa jollain ylennysnappulalla ja asettaa sen
+ * siirto-objektiin.
+ *
+ * @param window SFML-ikkuna, jossa näytetään ylennysvalinta
+ * @param asema Pelin nykyinen asema
+ * @param move Siirto, johon ylennys tallennetaan
+ */
 void promotionDialog(sf::RenderWindow& window, Asema& asema, Siirto& move) {
     int chosenPromotion = NA;
     bool validSelection = false;
@@ -92,7 +108,14 @@ void promotionDialog(sf::RenderWindow& window, Asema& asema, Siirto& move) {
     move._korotettava_nappula = chosenPromotion;
 }
 
-// SFML-käyttöliittymä, joka piirtää shakkilaudan ja käsittelee hiiritapahtumat
+/**
+ * @brief SFML-käyttöliittymä, joka piirtää shakkilaudan ja käsittelee hiiritapahtumat
+ *
+ * Tämä funktio luo SFML-ikkunan, jossa pelin shakkilauta ja nappulat piirretään.
+ * Käyttäjä voi valita siirtoja klikkaamalla hiirellä.
+ *
+ * @param asema Pelin nykyinen asema
+ */
 void sfml_gui(Asema& asema) {
     sf::Font font;
     if (!font.loadFromFile("C:/Users/savin/source/repos/Chessbot/font/AldotheApache.ttf")) {
@@ -202,7 +225,14 @@ void sfml_gui(Asema& asema) {
     }
 }
 
-// Tekstipohjainen käyttöliittymä komentorivillä
+/**
+ * @brief Tekstipohjainen käyttöliittymä komentorivillä
+ *
+ * Tämä funktio mahdollistaa tekstipohjaisen shakkipelin pelaamisen komentorivillä.
+ * Pelissä käyttäjä syöttää siirrot komentoriville.
+ *
+ * @param asema Pelin nykyinen asema
+ */
 void terminal_ui(Asema& asema) {
     vector<Siirto> siirrot;
     siirrot.reserve(100);
@@ -229,7 +259,7 @@ void terminal_ui(Asema& asema) {
         cout << "Siirtoja: " << siirrot.size() << endl;
         int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
         Siirto kayttajan_siirto;
-       
+
         while (true) {
             asema.kysy_siirto(asema._siirtovuoro, lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
             kayttajan_siirto = Siirto(lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
@@ -249,5 +279,3 @@ void terminal_ui(Asema& asema) {
         asema.anna_siirrot(siirrot);
     }
 }
-
-
