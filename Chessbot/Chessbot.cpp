@@ -26,20 +26,20 @@ int main() {
     Asema asema;  ///< Pelitilannetta kuvaava olio.
 
 
-    //Linnoitus asetelma testi
-    asema.tyhjenna();
+    ////Linnoitus asetelma testi
+    //asema.tyhjenna();
 
-    asema._lauta[7][4] = wK;
-    asema._lauta[7][7] = wR;
-    asema._lauta[7][0] = wR;
+    //asema._lauta[7][4] = wK;
+    //asema._lauta[7][7] = wR;
+    //asema._lauta[7][0] = wR;
 
-    asema._lauta[0][4] = bK;
-    asema._lauta[0][0] = bR;
-    asema._lauta[0][7] = bR;
-    asema._lauta[6][0] = wP;
+    //asema._lauta[0][4] = bK;
+    //asema._lauta[0][0] = bR;
+    //asema._lauta[0][7] = bR;
+    //asema._lauta[6][0] = wP;
 
-    asema._lauta[0][2] = bB; 
-    asema._lauta[0][5] = bB; 
+    //asema._lauta[0][2] = bB; 
+    //asema._lauta[0][5] = bB; 
 
     /// Luodaan säikeet graafiselle ja tekstipohjaiselle käyttöliittymälle.
     std::thread t1(sfml_gui, std::ref(asema));
