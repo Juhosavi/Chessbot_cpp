@@ -323,22 +323,51 @@ void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, vector<
     }
 }
 
-void Asema::hae_linnoitukset(int pelaaja, int rivi, int linja, vector<Siirto>& siirrot) const {
+void Asema::hae_linnoitukset(int pelaaja, int rivi, int linja, vector<Siirto>& siirrot) const 
+{
     if (pelaaja == VALKEA && rivi == 7 && linja == 4) {
-        if (_valkea_lyhyt_linna_sallittu && _lauta[7][5] == NA &&
-            !onko_ruutu_uhattu(7, 4, MUSTA) && !onko_ruutu_uhattu(7, 5, MUSTA))
+        // Valkoisen kuninkaan linnoitus
+
+        // Kingside (lyhyt linnoitus): ruudut (7,5) ja (7,6) tulee olla tyhjiä ja niillä ei saa olla uhkaa.
+        if (_valkea_lyhyt_linna_sallittu &&
+            _lauta[7][5] == NA && _lauta[7][6] == NA &&
+            !onko_ruutu_uhattu(7, 4, MUSTA) &&
+            !onko_ruutu_uhattu(7, 5, MUSTA) &&
+            !onko_ruutu_uhattu(7, 6, MUSTA))
+        {
             siirrot.push_back(Siirto(7, 4, 7, 6));
-        if (_valkea_pitka_linna_sallittu && _lauta[7][3] == NA &&
-            !onko_ruutu_uhattu(7, 4, MUSTA) && !onko_ruutu_uhattu(7, 3, MUSTA))
+        }
+        // Queenside (pitkä linnoitus): ruudut (7,1), (7,2) ja (7,3) tulee olla tyhjiä ja ruudut (7,4), (7,3) ja (7,2) eivät saa olla uhattu.
+        if (_valkea_pitka_linna_sallittu &&
+            _lauta[7][1] == NA && _lauta[7][2] == NA && _lauta[7][3] == NA &&
+            !onko_ruutu_uhattu(7, 4, MUSTA) &&
+            !onko_ruutu_uhattu(7, 3, MUSTA) &&
+            !onko_ruutu_uhattu(7, 2, MUSTA))
+        {
             siirrot.push_back(Siirto(7, 4, 7, 2));
+        }
     }
     else if (pelaaja == MUSTA && rivi == 0 && linja == 4) {
-        if (_musta_lyhyt_linna_sallittu && _lauta[0][5] == NA &&
-            !onko_ruutu_uhattu(0, 4, VALKEA) && !onko_ruutu_uhattu(0, 5, VALKEA))
+        // Mustan kuninkaan linnoitus
+
+        // Kingside: ruudut (0,5) ja (0,6) tulee olla tyhjiä ja niillä ei saa olla uhkaa.
+        if (_musta_lyhyt_linna_sallittu &&
+            _lauta[0][5] == NA && _lauta[0][6] == NA &&
+            !onko_ruutu_uhattu(0, 4, VALKEA) &&
+            !onko_ruutu_uhattu(0, 5, VALKEA) &&
+            !onko_ruutu_uhattu(0, 6, VALKEA))
+        {
             siirrot.push_back(Siirto(0, 4, 0, 6));
-        if (_musta_pitka_linna_sallittu && _lauta[0][3] == NA &&
-            !onko_ruutu_uhattu(0, 4, VALKEA) && !onko_ruutu_uhattu(0, 3, VALKEA))
+        }
+        // Queenside: ruudut (0,1), (0,2) ja (0,3) tulee olla tyhjiä ja ruudut (0,4), (0,3) ja (0,2) eivät saa olla uhattu.
+        if (_musta_pitka_linna_sallittu &&
+            _lauta[0][1] == NA && _lauta[0][2] == NA && _lauta[0][3] == NA &&
+            !onko_ruutu_uhattu(0, 4, VALKEA) &&
+            !onko_ruutu_uhattu(0, 3, VALKEA) &&
+            !onko_ruutu_uhattu(0, 2, VALKEA))
+        {
             siirrot.push_back(Siirto(0, 4, 0, 2));
+        }
     }
 }
 

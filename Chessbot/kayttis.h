@@ -35,7 +35,7 @@ void lataaTekstuurit() {
 
     for (const string& piece : pieces) {
         sf::Texture texture;
-        if (!texture.loadFromFile("C:/Users/savin/source/repos/Chessbot/pieces/" + piece + ".png")) {
+        if (!texture.loadFromFile("/pieces/" + piece + ".png")) {
             cerr << "Virhe ladattaessa tekstuuria: " << piece << endl;
         }
         textures[piece] = texture;
@@ -118,7 +118,7 @@ void promotionDialog(sf::RenderWindow& window, Asema& asema, Siirto& move) {
  */
 void sfml_gui(Asema& asema) {
     sf::Font font;
-    if (!font.loadFromFile("C:/Users/savin/source/repos/Chessbot/font/AldotheApache.ttf")) {
+    if (!font.loadFromFile("/font/AldotheApache.ttf")) {
         cerr << "Virhe ladattaessa fonttia!" << endl;
     }
     sf::Text text, text2;
@@ -241,7 +241,7 @@ void terminal_ui(Asema& asema) {
         siirrot.clear();
         asema.anna_siirrot(siirrot);
         MinimaxArvo minimaxTulos = asema.minimaxAlphaBetaAsync(
-            6,
+            4,
             -std::numeric_limits<float>::infinity(),
             std::numeric_limits<float>::infinity(),
             true  // tai false, jos et halua rinnakkaista juuritasoa
