@@ -6,19 +6,39 @@
 #include <limits>
 #include <vector>
 #include <map>
+#include <execution>
+#include <future>
+#include <algorithm>
 
 using namespace std;
 
 class MinimaxArvo
+
 {
+
 public:
+
 	MinimaxArvo(float arvo, Siirto siirto) :
+
 		_arvo(arvo), _siirto(siirto)
+
 	{}
 
-	float	_arvo;
-	Siirto	_siirto;
+
+
+	MinimaxArvo() : _arvo(0), _siirto()
+
+	{ }
+
+
+
+	float       _arvo;
+
+	Siirto      _siirto;
+
 };
+
+
 
 
 class Asema
@@ -76,11 +96,13 @@ public:
 	float pisteyta_lopputulos(int syvyys) const;
 	void tyhjenna();
 
+
 //------------------------UUSI KOODI------------------------
 
 
 	///ALPHA BETA KOKEILU, myös mainissa uusi rimpsu
-	MinimaxArvo minimax(int syvyys, float alpha, float beta)
+
+	MinimaxArvo minimaxAlphaBetaAsync(int syvyys, float alpha, float beta, bool rinnakkainen = false)
 	{
 		vector<Siirto> siirrot;
 		siirrot.reserve(100);
@@ -88,50 +110,119 @@ public:
 
 		if (siirrot.empty())
 		{
+			// Peli on päättynyt: palautetaan lopputilanteen arvio
 			return MinimaxArvo(pisteyta_lopputulos(syvyys), Siirto());
 		}
-
 		if (syvyys == 0)
 		{
+			// Katkaisupiste: arvioidaan asema
 			return MinimaxArvo(evaluoi(), Siirto());
 		}
 
-		float paras_arvo = (_siirtovuoro == VALKEA) ? numeric_limits<float>::lowest() : numeric_limits<float>::max();
 		Siirto paras_siirto;
 
-		for (Siirto& s : siirrot)
+		// Jos rinnakkaisuus halutaan juuritasolla, käytetään std::async:
+		if (rinnakkainen)
 		{
-			Asema uusi = *this;
-			uusi.tee_siirto(s, _siirtovuoro);
-			MinimaxArvo arvo = uusi.minimax(syvyys - 1, alpha, beta);
+			vector<future<MinimaxArvo>> futures;
+			futures.reserve(100);
+			// Käynnistetään asynkroniset laskut jokaiselle mahdolliselle siirrolle
+			for (const auto& s : siirrot)
+			{
+				futures.push_back(std::async(std::launch::async, [this, s, syvyys, alpha, beta]() {
+					Asema uusi = *this;
+					uusi.tee_siirto(s, this->_siirtovuoro);
+					return uusi.minimaxAlphaBetaAsync(syvyys - 1, alpha, beta, false);
+					}));
+			}
 
 			if (_siirtovuoro == VALKEA)
 			{
-				if (arvo._arvo > paras_arvo)
+				float maxArvo = std::numeric_limits<float>::lowest();
+				for (size_t i = 0; i < futures.size(); i++)
 				{
-					paras_arvo = arvo._arvo;
-					paras_siirto = s;
+					MinimaxArvo tulos = futures[i].get();
+					if (tulos._arvo > maxArvo)
+					{
+						maxArvo = tulos._arvo;
+						paras_siirto = siirrot[i];
+					}
+					alpha = std::max(alpha, maxArvo);
+					if (alpha >= beta)
+					{
+						// Beta-leikkaus: ei tarvita tarkempaa laskentaa
+						break;
+					}
 				}
-				alpha = max(alpha, paras_arvo);
+				return MinimaxArvo(maxArvo, paras_siirto);
 			}
 			else  // MUSTA
 			{
-				if (arvo._arvo < paras_arvo)
+				float minArvo = std::numeric_limits<float>::max();
+				for (size_t i = 0; i < futures.size(); i++)
 				{
-					paras_arvo = arvo._arvo;
-					paras_siirto = s;
+					MinimaxArvo tulos = futures[i].get();
+					if (tulos._arvo < minArvo)
+					{
+						minArvo = tulos._arvo;
+						paras_siirto = siirrot[i];
+					}
+					beta = std::min(beta, minArvo);
+					if (alpha >= beta)
+					{
+						// Alfa-leikkaus
+						break;
+					}
 				}
-				beta = min(beta, paras_arvo);
-			}
-
-			// Alpha-beta-leikkaus
-			if (beta <= alpha)
-			{
-				break;
+				return MinimaxArvo(minArvo, paras_siirto);
 			}
 		}
-
-		return MinimaxArvo(paras_arvo, paras_siirto);
+		else
+		{
+			// Sekventiaalinen alpha-beta
+			if (_siirtovuoro == VALKEA)
+			{
+				float maxArvo = std::numeric_limits<float>::lowest();
+				for (const auto& s : siirrot)
+				{
+					Asema uusi = *this;
+					uusi.tee_siirto(s, _siirtovuoro);
+					MinimaxArvo tulos = uusi.minimaxAlphaBetaAsync(syvyys - 1, alpha, beta, false);
+					if (tulos._arvo > maxArvo)
+					{
+						maxArvo = tulos._arvo;
+						paras_siirto = s;
+					}
+					alpha = std::max(alpha, maxArvo);
+					if (alpha >= beta)
+					{
+						break;
+					}
+				}
+				return MinimaxArvo(maxArvo, paras_siirto);
+			}
+			else  // MUSTA
+			{
+				float minArvo = std::numeric_limits<float>::max();
+				for (const auto& s : siirrot)
+				{
+					Asema uusi = *this;
+					uusi.tee_siirto(s, _siirtovuoro);
+					MinimaxArvo tulos = uusi.minimaxAlphaBetaAsync(syvyys - 1, alpha, beta, false);
+					if (tulos._arvo < minArvo)
+					{
+						minArvo = tulos._arvo;
+						paras_siirto = s;
+					}
+					beta = std::min(beta, minArvo);
+					if (alpha >= beta)
+					{
+						break;
+					}
+				}
+				return MinimaxArvo(minArvo, paras_siirto);
+			}
+		}
 	}
 
 
@@ -278,7 +369,9 @@ public:
 	}
 	float mobiliteetti() const {
 		std::vector<Siirto> valkean_siirrot;
+		valkean_siirrot.reserve(100);
 		std::vector<Siirto> mustan_siirrot;
+		mustan_siirrot.reserve(100);
 
 		anna_kaikki_raakasiirrot(VALKEA, valkean_siirrot); 
 		anna_kaikki_raakasiirrot(MUSTA, mustan_siirrot); 
