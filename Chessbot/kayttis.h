@@ -27,7 +27,7 @@ void lataaTekstuurit() {
 
     for (const string& piece : pieces) {
         sf::Texture texture;
-        if (!texture.loadFromFile("C:/Users/savin/source/repos/Chessbot/pieces/" + piece + ".png")) {
+        if (!texture.loadFromFile("/pieces/" + piece + ".png")) {
             cerr << "Virhe ladattaessa tekstuuria: " << piece << endl;
         }
         textures[piece] = texture;
@@ -95,20 +95,13 @@ void promotionDialog(sf::RenderWindow& window, Asema& asema, Siirto& move) {
 // SFML-käyttöliittymä, joka piirtää shakkilaudan ja käsittelee hiiritapahtumat
 void sfml_gui(Asema& asema) {
     sf::Font font;
-    if (!font.loadFromFile("C:/Users/savin/source/repos/Chessbot/font/AldotheApache.ttf")) {
-        cerr << "Virhe ladattaessa fonttia!" << endl;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
+        cerr << "Virhe ladattaessa Arial-fonttia!" << endl;
     }
-    sf::Text text, text2;
-    text.setFont(font);
-    text2.setFont(font);
-    text.setString("         A        B        C        D        E        F        G        H");
-    text2.setString("\n 8 \n\n 7 \n\n 6 \n\n 5 \n\n 4 \n\n 3 \n\n 2 \n\n 1");
-    text.setCharacterSize(45);
-    text2.setCharacterSize(60);
-    text.setFillColor(sf::Color::White);
 
     sf::RenderWindow window(sf::VideoMode(900, 900), "SFML Chessboard");
     lataaTekstuurit();
+
     map<int, string> pieceMap = {
         {wP, "white-pawn"}, {wR, "white-rook"}, {wN, "white-knight"},
         {wB, "white-bishop"}, {wQ, "white-queen"}, {wK, "white-king"},
@@ -127,80 +120,46 @@ void sfml_gui(Asema& asema) {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
-
-            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                int x = (event.mouseButton.x - 50) / tileSize;
-                int y = (event.mouseButton.y - 50) / tileSize;
-                if (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                    if (!siirtoValittu) {
-                        valittuRivi = y;
-                        valittuLinja = x;
-                        mahdollisetSiirrot.clear();
-                        asema.anna_siirrot(mahdollisetSiirrot);
-                        siirtoValittu = true;
-                    }
-                    else {
-                        bool validMove = false;
-                        for (const auto& s : mahdollisetSiirrot) {
-                            if (s._a_r == valittuRivi && s._a_l == valittuLinja &&
-                                s._l_r == y && s._l_l == x) {
-                                valittuSiirto = s;
-                                // Tarkistetaan, onko kyseessä ylennystilanne (sotilas päässyt viimeiselle riville)
-                                if ((asema._siirtovuoro == VALKEA && y == 0 && asema._lauta[valittuRivi][valittuLinja] == wP) ||
-                                    (asema._siirtovuoro == MUSTA && y == 7 && asema._lauta[valittuRivi][valittuLinja] == bP)) {
-                                    promotionDialog(window, asema, valittuSiirto);
-                                }
-                                asema.tee_siirto(valittuSiirto, asema._siirtovuoro);
-                                validMove = true;
-                                break;
-                            }
-                        }
-                        if (!validMove)
-                            siirtoValittu = false;
-                    }
-                }
-            }
         }
 
         window.clear();
         sf::Color darkBrown(139, 69, 19);
         sf::Color lightBrown(222, 184, 135);
+
         // Piirretään shakkilauta
         for (int y = 0; y < 8; ++y) {
             for (int x = 0; x < 8; ++x) {
                 sf::RectangleShape tile(sf::Vector2f(tileSize, tileSize));
                 tile.setPosition(x * tileSize + 50, y * tileSize + 50);
-                if ((x + y) % 2 == 0)
-                    tile.setFillColor(lightBrown);
-                else
-                    tile.setFillColor(darkBrown);
+                tile.setFillColor((x + y) % 2 == 0 ? lightBrown : darkBrown);
                 window.draw(tile);
 
-                // Piirretään nappulat
+                // Lisätään koordinaattiteksti ruutuun (vasen yläkulma)
+                sf::Text coordText;
+                coordText.setFont(font);
+                coordText.setCharacterSize(16);
+                coordText.setFillColor(sf::Color::Black);
+                coordText.setString(string(1, 'A' + x) + to_string(8 - y));
+                coordText.setPosition(x * tileSize + 55, y * tileSize + 55);
+                window.draw(coordText);
+
+                // Piirretään nappulat keskelle ruutua
                 int piece = asema._lauta[y][x];
                 if (pieceMap.find(piece) != pieceMap.end()) {
                     sf::Sprite sprite;
                     sprite.setTexture(textures[pieceMap[piece]]);
-                    sprite.setOrigin(-35, -35);
-                    sprite.setPosition(x * tileSize, y * tileSize);
+                    sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
+                    sprite.setPosition(x * tileSize + 100, y * tileSize + 100);
                     window.draw(sprite);
                 }
             }
         }
-        // Piirretään mahdolliset siirrot vihreinä ympyröinä
-        for (const auto& s : mahdollisetSiirrot) {
-            if (s._a_r == valittuRivi && s._a_l == valittuLinja) {
-                sf::CircleShape circle(15);
-                circle.setFillColor(sf::Color(0, 255, 0, 150));
-                circle.setPosition(s._l_l * tileSize + 50 + 35, s._l_r * tileSize + 50 + 35);
-                window.draw(circle);
-            }
-        }
-        window.draw(text);
-        window.draw(text2);
+
         window.display();
     }
 }
+
+
 
 // Tekstipohjainen käyttöliittymä komentorivillä
 void terminal_ui(Asema& asema) {
@@ -211,7 +170,7 @@ void terminal_ui(Asema& asema) {
         siirrot.clear();
         asema.anna_siirrot(siirrot);
         MinimaxArvo minimaxTulos = asema.minimaxAlphaBetaAsync(
-            6,
+            4,
             -std::numeric_limits<float>::infinity(),
             std::numeric_limits<float>::infinity(),
             true  // tai false, jos et halua rinnakkaista juuritasoa
@@ -229,7 +188,7 @@ void terminal_ui(Asema& asema) {
         cout << "Siirtoja: " << siirrot.size() << endl;
         int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
         Siirto kayttajan_siirto;
-       
+
         while (true) {
             asema.kysy_siirto(asema._siirtovuoro, lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
             kayttajan_siirto = Siirto(lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
