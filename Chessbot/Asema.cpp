@@ -323,7 +323,8 @@ void Asema::anna_kuningas_raakasiirrot(int rivi, int linja, int pelaaja, vector<
     }
 }
 
-void Asema::hae_linnoitukset(int pelaaja, int rivi, int linja, vector<Siirto>& siirrot) const {
+void Asema::hae_linnoitukset(int pelaaja, int rivi, int linja, vector<Siirto>& siirrot) const 
+{
     if (pelaaja == VALKEA && rivi == 7 && linja == 4) {
         // Valkoisen kuninkaan linnoitus
 
