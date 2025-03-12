@@ -14,8 +14,9 @@
 
 using namespace std;
 
-// Shakkilaudan ruudun koko
+// Shakkilaudan ruudun koko ja aloitusoffset
 const int tileSize = 100;
+const int offset = 50;
 
 // Tekstuurit kaikille nappuloille
 map<string, sf::Texture> textures;
@@ -48,7 +49,7 @@ void promotionDialog(sf::RenderWindow& window, Asema& asema, Siirto& move) {
     sf::Sprite bishopSprite(textures["white-bishop"]);
     sf::Sprite knightSprite(textures["white-knight"]);
 
-    // Aseta spritejen sijainnit (keskelle ikkunaa)
+    // Aseta spritejen sijainnit ikkunan keskelle
     queenSprite.setPosition(300, 300);
     rookSprite.setPosition(450, 300);
     bishopSprite.setPosition(300, 450);
@@ -130,11 +131,11 @@ void sfml_gui(Asema& asema, int playerColor) {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            // Jos on pelaajan vuoro (valitun värin mukaisesti), käsitellään hiiritapahtumat.
+            // Jos on pelaajan vuoro, käsitellään hiiritapahtumat.
             if (asema._siirtovuoro == playerColor) {
                 if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                    int x = (event.mouseButton.x - 50) / tileSize;
-                    int y = (event.mouseButton.y - 50) / tileSize;
+                    int x = (event.mouseButton.x - offset) / tileSize;
+                    int y = (event.mouseButton.y - offset) / tileSize;
                     if (x >= 0 && x < 8 && y >= 0 && y < 8) {
                         if (!siirtoValittu) {
                             // Ensimmäisellä klikkauksella valitaan lähtöruutu
@@ -161,8 +162,9 @@ void sfml_gui(Asema& asema, int playerColor) {
                                     break;
                                 }
                             }
-                            if (!validMove)
-                                siirtoValittu = false;
+                            // Kun siirto on tehty tai valinta peruuntuu, nollataan valinta
+                            siirtoValittu = false;
+                            mahdollisetSiirrot.clear();
                         }
                     }
                 }
@@ -176,7 +178,7 @@ void sfml_gui(Asema& asema, int playerColor) {
         for (int y = 0; y < 8; ++y) {
             for (int x = 0; x < 8; ++x) {
                 sf::RectangleShape tile(sf::Vector2f(tileSize, tileSize));
-                tile.setPosition(x * tileSize + 50, y * tileSize + 50);
+                tile.setPosition(x * tileSize + offset, y * tileSize + offset);
                 tile.setFillColor(((x + y) % 2 == 0) ? lightBrown : darkBrown);
                 window.draw(tile);
 
@@ -184,19 +186,24 @@ void sfml_gui(Asema& asema, int playerColor) {
                 if (pieceMap.find(piece) != pieceMap.end()) {
                     sf::Sprite sprite;
                     sprite.setTexture(textures[pieceMap[piece]]);
-                    sprite.setOrigin(-35, -35);
-                    sprite.setPosition(x * tileSize, y * tileSize);
+                    // Aseta origin tekstuurin puolikkaaksi, jotta nappula keskittyy oikein
+                    sf::Vector2u texSize = textures[pieceMap[piece]].getSize();
+                    sprite.setOrigin(texSize.x / 2.0f, texSize.y / 2.0f);
+                    // Sijoitetaan nappula keskelle ruutua
+                    sprite.setPosition(x * tileSize + offset + tileSize / 2,
+                        y * tileSize + offset + tileSize / 2);
                     window.draw(sprite);
                 }
             }
         }
-        // Piirretään vihreät pallot ainoastaan niille siirroille, jotka lähtevät valitusta ruudusta.
+        // Piirretään vihreät merkit mahdollisille siirroille vain, jos valinta on aktiivinen.
         if (siirtoValittu) {
             for (const auto& s : mahdollisetSiirrot) {
                 if (s._a_r == valittuRivi && s._a_l == valittuLinja) {
                     sf::CircleShape circle(15);
                     circle.setFillColor(sf::Color(0, 255, 0, 150));
-                    circle.setPosition(s._l_l * tileSize + 50 + 35, s._l_r * tileSize + 50 + 35);
+                    circle.setPosition(s._l_l * tileSize + offset + tileSize / 2 - 15,
+                        s._l_r * tileSize + offset + tileSize / 2 - 15);
                     window.draw(circle);
                 }
             }
@@ -244,7 +251,7 @@ void terminal_ui(Asema& asema, int playerColor) {
             int lahto_rivi, lahto_linja, kohde_rivi, kohde_linja;
             Siirto kayttajan_siirto;
             while (true) {
-                cout << "Syötä siirto muodossa: lahto_rivi lahto_linja kohde_rivi kohde_linja" << endl;
+                cout << "Syötä siirto muodossa: esim f2f4" << endl;
                 asema.kysy_siirto(asema._siirtovuoro, lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
                 kayttajan_siirto = Siirto(lahto_rivi, lahto_linja, kohde_rivi, kohde_linja);
                 bool laillinen_siirto = false;
