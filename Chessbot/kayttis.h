@@ -31,7 +31,7 @@ void lataaTekstuurit() {
 
     for (const string& piece : pieces) {
         sf::Texture texture;
-        if (!texture.loadFromFile("C:/Users/savin/source/repos/Chessbot/pieces/" + piece + ".png")) {
+        if (!texture.loadFromFile("/pieces/" + piece + ".png")) {
             cerr << "Virhe ladattaessa tekstuuria: " << piece << endl;
         }
         textures[piece] = texture;
@@ -97,7 +97,7 @@ void promotionDialog(sf::RenderWindow& window, Asema& asema, Siirto& move) {
 // SFML-käyttöliittymä, jossa pelaajan vuorolla odotetaan hiiritapahtumia ja muulloin AI laskee siirtonsa.
 void sfml_gui(Asema& asema, int playerColor) {
     sf::Font font;
-    if (!font.loadFromFile("C:/Users/savin/source/repos/Chessbot/font/AldotheApache.ttf")) {
+    if (!font.loadFromFile("/font/")) {
         cerr << "Virhe ladattaessa fonttia!" << endl;
     }
     sf::Text text, text2;
